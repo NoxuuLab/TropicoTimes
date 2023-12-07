@@ -1,5 +1,6 @@
 // IntroductionScene.js
-//import { commonTextStyle, headerTextStyle } from '../../src/styles/textStyles.js';
+import { commonTextStyle, headerTextStyle } from '../src/styles/textStyles';
+
 
 class IntroductionScene extends Phaser.Scene {
     constructor() {
@@ -8,8 +9,8 @@ class IntroductionScene extends Phaser.Scene {
   
     preload() {
       // Load assets for the introduction scene
-      this.load.image('background', '../../src/assets/introductionScene/background.png');
-      this.load.image('startButton', '../../src/assets/introductionScene/ButtonEnter.png');
+      this.load.image('background', '../src/assets/introductionScene/background.png');
+      this.load.image('startButton', '../src/assets/introductionScene/ButtonEnter.png');
     }
   
     create() {
