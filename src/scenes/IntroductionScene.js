@@ -1,9 +1,5 @@
 // IntroductionScene.js
-<<<<<<< Updated upstream
-import { commonTextStyle, headerTextStyle } from './src/styles/textStyles';
-=======
-import { commonTextStyle, headerTextStyle } from "../styles/textStyles.js";
->>>>>>> Stashed changes
+//import { commonTextStyle, headerTextStyle } from "../styles/textStyles.js";
 
 
 class IntroductionScene extends Phaser.Scene {
@@ -13,13 +9,9 @@ class IntroductionScene extends Phaser.Scene {
   
     preload() {
       // Load assets for the introduction scene
-<<<<<<< Updated upstream
       this.load.image('background', './src/assets/introductionScene/background.png');
       this.load.image('startButton', './src/assets/introductionScene/ButtonEnter.png');
-=======
-      this.load.image('background', '/src/assets/introductionScene/background.png');
-      this.load.image('startButton', '/src/assets/introductionScene/ButtonEnter.png');
->>>>>>> Stashed changes
+
     }
   
     create() {
