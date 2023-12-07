@@ -1,4 +1,5 @@
 // IntroductionScene.js
+import { commonTextStyle, headerTextStyle } from '../styles/textStyles.js';
 console.log("IntroductionScene loaded");
 
 class IntroductionScene extends Phaser.Scene {
@@ -20,10 +21,10 @@ class IntroductionScene extends Phaser.Scene {
 
      
         // Add rules text using Phaser Text object
-        const rulesText = this.add.text(50, 50, 'Rules:', { fontSize: '64px', fontWeight: 'bold' });
+        const rulesText = this.add.text(50, 50, 'Rules:', headerTextStyle);
 
-        const rule1 = this.add.text(50, 150, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla at odio commodo auctor. Pellentesque maximus tellus non erat gravida porta. Suspendisse eu eleifend ex.', { fontSize: '40px' });
-        const rule2 = this.add.text(50, 250, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla at odio commodo auctor. Pellentesque maximus tellus non erat gravida porta. Suspendisse eu eleifend ex.', { fontSize: '40px' });
+        const rule1 = this.add.text(50, 150, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla at odio commodo auctor. Pellentesque maximus tellus non erat gravida porta. Suspendisse eu eleifend ex.', commonTextStyle);
+        const rule2 = this.add.text(50, 250, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla at odio commodo auctor. Pellentesque maximus tellus non erat gravida porta. Suspendisse eu eleifend ex.', commonTextStyle);
 
         // Add the Text objects to the scene
         this.add.existing(rulesText);
