@@ -18,16 +18,17 @@ class IntroductionScene extends Phaser.Scene {
     const backgroundImage = this.add.image(540, 320, 'background'); // Centered position
       // Set up text styling
 
-     // Add rules text using Phaser Text object
-     const rulesText = this.add.text(50, 50, 'Rules:', );
+     
+        // Add rules text using Phaser Text object
+        const rulesText = this.add.text(50, 50, 'Rules:', { fontSize: '64px', fontWeight: 'bold' });
 
-     const rule1 = this.add.text(50, 150, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla at odio commodo auctor. Pellentesque maximus tellus non erat gravida porta. Suspendisse eu eleifend ex.',);
-     const rule2 = this.add.text(50, 350, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla at odio commodo auctor. Pellentesque maximus tellus non erat gravida porta. Suspendisse eu eleifend ex.',);
+        const rule1 = this.add.text(50, 150, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla at odio commodo auctor. Pellentesque maximus tellus non erat gravida porta. Suspendisse eu eleifend ex.', { fontSize: '40px' });
+        const rule2 = this.add.text(50, 250, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut fringilla at odio commodo auctor. Pellentesque maximus tellus non erat gravida porta. Suspendisse eu eleifend ex.', { fontSize: '40px' });
 
-     // Add the Text objects to the scene
-     this.add.existing(rulesText);
-     this.add.existing(rule1);
-     this.add.existing(rule2);
+        // Add the Text objects to the scene
+        this.add.existing(rulesText);
+        this.add.existing(rule1);
+        this.add.existing(rule2);
 
     const startButton = this.add.sprite(880, 550, 'startButton').setInteractive();
 
