@@ -2,10 +2,15 @@
 
 const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
-    scene: [IntroductionScene] // Include both scenes
+    parent: 'game-container',
+    width: 1080,
+    height: 640,
+    scene: [IntroductionScene, MainScene],
+  
   };
+
   
   const game = new Phaser.Game(config);
+
+
   

@@ -1,0 +1,15 @@
+body {
+    background-color: linen;
+    font-family: 'Iowan Old Style', sans-serif;
+    /* Add more styles as needed */
+  }
+
+  #game-container {
+    margin: 100px; /* Add margin around the game container */
+}
+.footer {
+    font-size: 16px;
+    margin-top: -20px;
+    margin-bottom: 50px;
+ 
+  }

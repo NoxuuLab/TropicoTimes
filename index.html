@@ -3,19 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Corrected paths based on project structure -->
+  <link rel="stylesheet" href="/src/styles/main.css">
+  <script type="module" src="/src/scenes/IntroductionScene.js"></script>
+  <script type="module" src="/src/scenes/MainScene.js"></script>
+  <script type="module" src="main.js"></script>
+
   <title>2D game journalism</title>
 </head>
 <body>
-    <!-- Include Phaser library from CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.70.0/phaser.min.js"></script>
+  <!-- Your content goes here -->
+  <div id="wrapper">
+    <div id="game-container">
+      <!-- Phaser library from CDN -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.70.0/phaser.min.js"></script>
 
-   
-    <script src="scenes/IntroductionScene.js"></script>
+      <!-- Scenes of the Game -->
+      <script type="module" src="/src/scenes/IntroductionScene.js"></script>
+      <script type="module" src="/src/scenes/MainScene.js"></script>
 
-
-
-  <!-- Include your main.js script -->
-  <script src="main.js"></script>
+      <!-- main.js script -->
+      <script type="module" src="main.js"></script>
+    </div>
+    <div class="footer">&copy; Copyright 2023, Marcela. All Rights Reserved.</div>
+  </div>  
 </body>
 </html>
-

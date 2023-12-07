@@ -1,4 +1,5 @@
 // MainScene.js
+console.log("IntroductionScene loaded");
 
 class MainScene extends Phaser.Scene {
     constructor() {
@@ -12,7 +13,9 @@ class MainScene extends Phaser.Scene {
     }
   
     create() {
+      
       // Set up the main scene
+      this.add.image(400, 300, 'background');
       // Create containers, sprites, and other game elements
   
       // Enable drag and drop for articles
