@@ -1,6 +1,4 @@
-import IntroductionScene from './src/scenes/IntroductionScene.js';
-import MainScene from './src/scenes/MainScene.js';
-
+// main.js
 const config = {
     type: Phaser.AUTO,
     parent: 'game-container',

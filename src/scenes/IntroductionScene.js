@@ -1,7 +1,5 @@
 // IntroductionScene.js
-import Phaser from 'phaser';
-import { commonTextStyle, headerTextStyle } from '../src/styles/textStyles';
-
+console.log("IntroductionScene loaded");
 
 class IntroductionScene extends Phaser.Scene {
     constructor() {

@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/NoxuuLab/UNIL-game-2D#readme",
   "dependencies": {
-    "phaser": "^3.70.0"
+    "phaser": "^3.70.0",
+    "webpack": "^5.89.0"
   }
 }

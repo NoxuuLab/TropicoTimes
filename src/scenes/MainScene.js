@@ -1,6 +1,6 @@
 // MainScene.js
-console.log("IntroductionScene loaded");
-import Phaser from 'phaser';
+console.log("MainScene loaded");
+
 
 class MainScene extends Phaser.Scene {
     constructor() {
