@@ -33,4 +33,6 @@ class MainScene extends Phaser.Scene {
       // Add logic for sorting articles into containers
     }
   }
+
+  export default MainScene;
   

@@ -39,4 +39,6 @@ class IntroductionScene extends Phaser.Scene {
       // Add text or other elements to explain the rules
     }
   }
+
+  export default IntroductionScene;
   
