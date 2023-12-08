@@ -36,11 +36,6 @@ export default class ChooseArticle extends Phaser.Scene {
     var mediumArticle = this.add.image(800, 300, 'medium').setInteractive({ draggable: true });
     var largeArticle = this.add.image(800, 450, 'large').setInteractive({ draggable: true });
 
-
-    // Define dimensions of small article
-    const smallArticleWidth = 100;
-    const smallArticleHeight = 200;
-
     // Enable drag events for articles
     this.input.setDraggable(smallArticle);
     this.input.setDraggable(mediumArticle);
