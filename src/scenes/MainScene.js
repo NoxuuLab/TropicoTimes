@@ -11,6 +11,7 @@ class MainScene extends Phaser.Scene {
       // Load assets for the main scene
       this.load.image('background', './src/assets/introductionScene/IntroductionSceneBackground.png');
       // Load articles and other necessary assets
+      
     }
   
     create() {

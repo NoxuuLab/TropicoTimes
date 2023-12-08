@@ -16,7 +16,7 @@ class IntroductionScene extends Phaser.Scene {
     create() {
 
       // Set up the introduction scene
-    const backgroundImage = this.add.image(540, 320, 'background'); // Centered position
+    const backgroundImage = this.add.image(400, 300, 'background'); // Centered position
       // Set up text styling
 
      
@@ -31,10 +31,10 @@ class IntroductionScene extends Phaser.Scene {
         this.add.existing(rule1);
         this.add.existing(rule2);
 
-    const startButton = this.add.sprite(880, 550, 'startButton').setInteractive();
+    const startButton = this.add.sprite(600, 500, 'startButton').setInteractive();
 
     startButton.on('pointerdown', () => {
-      this.scene.start('MainScene');
+      this.scene.start('ChooseArticle');
     });
   
       // Add text or other elements to explain the rules

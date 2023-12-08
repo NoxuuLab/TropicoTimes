@@ -8,7 +8,7 @@ export const commonTextStyle = {
     fontStyle: 'italic',
     align: 'left',
     wordWrap: {
-        width: 1000
+        width: 700
     }
 };
 
@@ -21,6 +21,6 @@ export const headerTextStyle = {
     fontStyle: 'italic',
     align: 'left',
     wordWrap: {
-        width: 1000
+        width: 700
     }
 };
