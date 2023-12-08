@@ -30,27 +30,69 @@ export default class ChooseArticle extends Phaser.Scene {
         this.add.rectangle(x, y, tileSizeX, tileSizeY, 0x000000).setStrokeStyle(2, 0xffffff);
       }
     }
+
+    // Add articles
     var smallArticle = this.add.image(800, 150, 'small').setInteractive({ draggable: true });
     var mediumArticle = this.add.image(800, 300, 'medium').setInteractive({ draggable: true });
     var largeArticle = this.add.image(800, 450, 'large').setInteractive({ draggable: true });
 
+
+    // Define dimensions of small article
+    const smallArticleWidth = 100;
+    const smallArticleHeight = 200;
+
+    // Enable drag events for articles
     this.input.setDraggable(smallArticle);
     this.input.setDraggable(mediumArticle);
     this.input.setDraggable(largeArticle);
 
-    // Add event listeners for drag events
-    this.input.on('dragstart', function (pointer, gameObject) {
-      gameObject.setTint(0xff0000);
-    });
+ // Add event listeners for drag events
+ this.input.on('dragstart', function (pointer, gameObject) {
+  gameObject.setTint(0xff0000);
+});
 
-    this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-      gameObject.x = dragX;
-      gameObject.y = dragY;
-    });
+this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+  // Update position while dragging
+  gameObject.x = dragX;
+  gameObject.y = dragY;
+});
 
-    this.input.on('dragend', function (pointer, gameObject) {
-      gameObject.clearTint();
-    });
-
+this.input.on('dragend', function (pointer, gameObject) {
+  gameObject.clearTint();
+  if (gameObject.texture.key === 'small') {
+    this.snapSmallToGrid(gameObject, tileSizeX, tileSizeY);
+  } else if (gameObject.texture.key === 'medium') {
+    this.snapMediumToGrid(gameObject, tileSizeX, tileSizeY);
+  } else if (gameObject.texture.key === 'large') {
+    this.snapLargeToGrid(gameObject, tileSizeX, tileSizeY);
   }
+}, this);
 }
+
+ // Function to snap a small article to the grid lines with 2 squares size
+ snapSmallToGrid(gameObject, tileSizeX, tileSizeY, articleWidth, articleHeight) {
+  // Calculate the snapped position based on the size of the article
+  var snappedX = Math.round(gameObject.x / tileSizeX) * tileSizeX-50; // Snap from the left corner
+  var snappedY = Math.round(gameObject.y / tileSizeY) * tileSizeY; // Snap from the top corner
+
+  // Log values for debugging
+  console.log('gameObject.y:', gameObject.y);
+  console.log('tileSizeY:', tileSizeY);
+  console.log('snappedY:', snappedY);
+  console.log('snappedX:', snappedX);
+
+  // Set the snapped position
+  gameObject.x = snappedX;
+  gameObject.y = snappedY;
+}
+
+// Function to snap a large article to the grid lines
+snapLargeToGrid(gameObject, tileSizeX, tileSizeY) {
+  // Adjust this function based on the characteristics of large articles
+  var snappedX = Math.round(gameObject.x / tileSizeX) * tileSizeX;
+  var snappedY = Math.round(gameObject.y / tileSizeY) * tileSizeY;
+  gameObject.x = snappedX;
+  gameObject.y = snappedY;
+}
+}
+
