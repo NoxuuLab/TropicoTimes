@@ -1,6 +1,6 @@
-export default class ChooseArticle extends Phaser.Scene {
+export default class MapTiles extends Phaser.Scene {
   constructor() {
-    super({ key: 'ChooseArticle' });
+    super({ key: 'MapTiles' });
 
       
   }

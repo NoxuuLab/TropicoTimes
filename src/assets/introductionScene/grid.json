@@ -1,0 +1,45 @@
+{ "compressionlevel":-1,
+ "height":5,
+ "infinite":false,
+ "layers":[
+        {
+         "data":[1, 1, 1, 1,
+            1, 1, 1, 1,
+            1, 1, 1, 1,
+            1, 1, 1, 1,
+            1, 1, 1, 1],
+         "height":5,
+         "id":1,
+         "name":"GridLayer",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":4,
+         "x":0,
+         "y":0
+        }],
+ "nextlayerid":2,
+ "nextobjectid":1,
+ "orientation":"orthogonal",
+ "renderorder":"right-down",
+ "tiledversion":"1.10.2",
+ "tileheight":100,
+ "tilesets":[
+        {
+         "columns":1,
+         "firstgid":1,
+         "image":"tile.png",
+         "imageheight":100,
+         "imagewidth":100,
+         "margin":0,
+         "name":"tile",
+         "spacing":0,
+         "tilecount":1,
+         "tileheight":100,
+         "tilewidth":100
+        }],
+ "tilewidth":100,
+ "type":"map",
+ "version":"1.10",
+ "width":4
+}
