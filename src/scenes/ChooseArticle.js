@@ -34,17 +34,22 @@ export default class ChooseArticle extends Phaser.Scene {
         this.add.rectangle(x, y, tileSizeX, tileSizeY, 0x000000).setStrokeStyle(2, 0xffffff);
       }
     }
-     // Define the grid boundaries
-     var gridBounds = {
-      minX: 100,
-      maxX: tileSizeX,
-      minY: 100,
-      maxY: tileSizeX,
-    };
 
-  this.add.rectangle(gridBounds.minX, gridBounds.minY, gridBounds.maxX - gridBounds.minX, gridBounds.maxY - gridBounds.minY)
-  .setStrokeStyle(2, 0xff0000);
+// Calculate the grid boundaries
+var gridBounds = {
+  minX: 1,
+  maxX: 400,
+  minY: 1,
+  maxY: 500,
+};
 
+// Draw a Rectangle around the Grid Boundaries
+this.add.rectangle(
+  gridBounds.minX + (gridBounds.maxX - gridBounds.minX) / 2,  // x-coordinate of the center: (400 - 0) / 2 + 0 = 200
+  gridBounds.minY + (gridBounds.maxY - gridBounds.minY) / 2,  // y-coordinate of the center: (500 - 0) / 2 + 0 = 250
+  gridBounds.maxX - gridBounds.minX,                          // Width of the rectangle: 400 - 0 = 400
+  gridBounds.maxY - gridBounds.minY                           // Height of the rectangle: 500 - 0 = 500
+).setStrokeStyle(3, 0xff0000);  // Set white stroke with a width of 2 pixels and red color
 
     // Add articles
     var smallArticle = this.add.image(800, 150, 'small').setInteractive({ draggable: true });
