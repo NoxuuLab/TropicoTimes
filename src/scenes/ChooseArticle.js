@@ -11,6 +11,10 @@ export default class ChooseArticle extends Phaser.Scene {
   }
 
   create() {
+    this.cameras.main.setPosition(0, 0);
+    this.cameras.main.setOrigin(0, 0);
+
+
     // Add background image
     this.add.image(400, 300, 'background');
 
@@ -30,6 +34,17 @@ export default class ChooseArticle extends Phaser.Scene {
         this.add.rectangle(x, y, tileSizeX, tileSizeY, 0x000000).setStrokeStyle(2, 0xffffff);
       }
     }
+     // Define the grid boundaries
+     var gridBounds = {
+      minX: 100,
+      maxX: tileSizeX,
+      minY: 100,
+      maxY: tileSizeX,
+    };
+
+  this.add.rectangle(gridBounds.minX, gridBounds.minY, gridBounds.maxX - gridBounds.minX, gridBounds.maxY - gridBounds.minY)
+  .setStrokeStyle(2, 0xff0000);
+
 
     // Add articles
     var smallArticle = this.add.image(800, 150, 'small').setInteractive({ draggable: true });
@@ -41,62 +56,97 @@ export default class ChooseArticle extends Phaser.Scene {
     this.input.setDraggable(mediumArticle);
     this.input.setDraggable(largeArticle);
 
- // Add event listeners for drag events
- this.input.on('dragstart', function (pointer, gameObject) {
-  gameObject.setTint(0xff0000);
-});
+    
+  // Store the original positions in the article's data
+    smallArticle.setData('originalX', smallArticle.x);
+    smallArticle.setData('originalY', smallArticle.y);
 
-this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
-  // Update position while dragging
-  gameObject.x = dragX;
-  gameObject.y = dragY;
-});
+    mediumArticle.setData('originalX', mediumArticle.x);
+    mediumArticle.setData('originalY', mediumArticle.y);
+
+    largeArticle.setData('originalX', largeArticle.x);
+    largeArticle.setData('originalY', largeArticle.y);
+
+
+    this.input.on('dragstart', function (pointer, gameObject) {
+      gameObject.setTint(0xff0000);
+      gameObject.setData('originalX', gameObject.x);
+      gameObject.setData('originalY', gameObject.y);
+    });
+
+    this.input.on('drag', function (pointer, gameObject, dragX, dragY) {
+      // Update position while dragging
+      gameObject.x = dragX;
+      gameObject.y = dragY;
+    });
 
 this.input.on('dragend', function (pointer, gameObject) {
-  gameObject.clearTint();
-  if (gameObject.texture.key === 'small') {
-    this.snapSmallToGrid(gameObject, tileSizeX, tileSizeY);
-  } else if (gameObject.texture.key === 'medium') {
-    this.snapMediumToGrid(gameObject, tileSizeX, tileSizeY);
-  } else if (gameObject.texture.key === 'large') {
-    this.snapLargeToGrid(gameObject, tileSizeX, tileSizeY);
-  }
-}, this);
+    gameObject.clearTint();
+
+     // Get the original positions from the article's data
+    const originalX = gameObject.getData('originalX');
+    const originalY = gameObject.getData('originalY');
+
+      // Log current positions and dimensions for debugging
+  console.log('gameObject.x:', gameObject.x);
+  console.log('gameObject.y:', gameObject.y);
+  console.log('originalX:', originalX);
+  console.log('originalY:', originalY);
+
+  // Log values for debugging
+  console.log('gameObject.y:', gameObject.y);
+
+ 
+
+    // Check if the article is within the boundaries of the grid
+    if (
+      gameObject.x >= gridBounds.minX && gameObject.x <= gridBounds.maxX &&
+      gameObject.y >= gridBounds.minY && gameObject.y <= gridBounds.maxY
+    ) {
+      // Snap to grid only if within boundaries
+      if (gameObject.texture.key === 'small') {
+        this.snapSmallToGrid(gameObject, tileSizeX, tileSizeY, 1);
+      } else if (gameObject.texture.key === 'medium') {
+        this.snapMediumToGrid(gameObject, tileSizeX, tileSizeY, 1);
+      } else if (gameObject.texture.key === 'large') {
+        this.snapLargeToGrid(gameObject, tileSizeX, tileSizeY, 1);
+      }
+    } else {
+      // Reset position if outside boundaries
+      gameObject.x = originalX;
+      gameObject.y = originalY;
+    }
+  }, this);
 }
 
  // Function to snap a small article to the grid lines with 2 squares size
- snapSmallToGrid(gameObject, tileSizeX, tileSizeY, articleWidth, articleHeight) {
+ snapSmallToGrid(gameObject, tileSizeX, tileSizeY, precision) {
   // Calculate the snapped position based on the size of the article
-  var snappedX = Math.round(gameObject.x / tileSizeX) * tileSizeX-50; // Snap from the left corner
-  var snappedY = Math.round(gameObject.y / tileSizeY) * tileSizeY; // Snap from the top corner
+  var snappedX = Math.round(gameObject.x / tileSizeX / precision) * tileSizeX-50; // Snap from the left corner
+  var snappedY = Math.round(gameObject.y / tileSizeY / precision) * tileSizeY; // Snap from the top corner
 
   // Set the snapped position
   gameObject.x = snappedX;
   gameObject.y = snappedY;
+
+  
 }
 
 // Function to snap a large article to the grid lines
-snapMediumToGrid(gameObject, tileSizeX, tileSizeY) {
+snapMediumToGrid(gameObject, tileSizeX, tileSizeY, precision) {
   // Adjust this function based on the characteristics of large articles
-  var snappedX = Math.round(gameObject.x / tileSizeX) * tileSizeX;
-  var snappedY = Math.round(gameObject.y / tileSizeY) * tileSizeY;
-
-
-  // Log values for debugging
-  console.log('gameObject.y:', gameObject.y);
-  console.log('tileSizeY:', tileSizeY);
-  console.log('snappedY:', snappedY);
-  console.log('snappedX:', snappedX);
+  var snappedX = Math.round(gameObject.x / tileSizeX / precision) * tileSizeX;
+  var snappedY = Math.round(gameObject.y / tileSizeY / precision) * tileSizeY;
 
   gameObject.x = snappedX;
   gameObject.y = snappedY;
 }
 
 // Function to snap a large article to the grid lines
-snapLargeToGrid(gameObject, tileSizeX, tileSizeY) {
+snapLargeToGrid(gameObject, tileSizeX, tileSizeY, precision) {
   // Adjust this function based on the characteristics of large articles
-  var snappedX = Math.round(gameObject.x / tileSizeX) * tileSizeX-50;
-  var snappedY = Math.round(gameObject.y / tileSizeY) * tileSizeY-50;
+  var snappedX = Math.round(gameObject.x / tileSizeX / precision) * tileSizeX-50;
+  var snappedY = Math.round(gameObject.y / tileSizeY / precision) * tileSizeY-50;
 
   gameObject.x = snappedX;
   gameObject.y = snappedY;

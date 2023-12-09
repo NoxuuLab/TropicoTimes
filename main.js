@@ -1,6 +1,6 @@
 // main.js
-import IntroductionScene from './src/scenes/IntroductionScene.js';
-import MainScene from './src/scenes/MainScene.js';
+//import IntroductionScene from './src/scenes/IntroductionScene.js';
+//import MainScene from './src/scenes/MainScene.js';
 import ChooseArticle from './src/scenes/ChooseArticle.js';
 
 const config = {
@@ -8,7 +8,7 @@ const config = {
     parent: 'game-container',
     width: 800,
     height: 600,
-    scene: [IntroductionScene, ChooseArticle,MainScene],
+    scene: [ChooseArticle],
   
   };
 
