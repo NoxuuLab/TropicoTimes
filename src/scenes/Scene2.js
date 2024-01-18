@@ -11,5 +11,7 @@ export default class Scene2 extends Phaser.Scene {
 
     create() {
         console.log('Scene 2 created!');
+         // Move to Scene2 and pass data using init
+        
     }
 }
