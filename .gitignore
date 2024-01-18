@@ -1,0 +1,30 @@
+# Node.js dependencies
+node_modules/
+
+# Bower dependencies
+bower_components/
+
+# Compiled output
+dist/
+out/
+
+# Build process files
+build/
+*.log
+
+# Environment variables file
+.env
+
+# IDE/Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs and temporary files
+log/
+tmp/
+
+# User-specific files
+.DS_Store
+Thumbs.db

@@ -1,21 +1,13 @@
+import Scene1 from './src/scenes/Scene1.js'
+import Scene2 from './src/scenes/Scene2.js'
+import Scene3 from './src/scenes/Scene3.js'
+
 // main.js
-//import IntroductionScene from './src/scenes/IntroductionScene.js';
-//import MainScene from './src/scenes/MainScene.js';
-//import ChooseArticle from './src/scenes/ChooseArticle.js';
-import MapTiles from './src/scenes/Maptile.js';
-
 const config = {
-    type: Phaser.AUTO,
-    parent: 'game-container',
-    width: 800,
-    height: 600,
-    scene: [MapTiles],
-  
-  };
+  type: Phaser.AUTO,
+  width: 800,
+  height: 600,
+  scene: [Scene1, Scene2, Scene3]
+};
 
-  
-  const game = new Phaser.Game(config);
-  export default game;
-
-
-  
+const game = new Phaser.Game(config);
