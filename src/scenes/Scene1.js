@@ -45,10 +45,22 @@ export default class Scene1 extends Phaser.Scene {
             .setOrigin(0.5)
             .setInteractive();
 
-        // Handle publish button click
-        publishButton.on('pointerdown', () => {
-            // Move to Scene2 and pass data using init
-            this.scene.start('Scene2', { selectedData: this.selectedData });
-        });
+       // Handle publish button click
+publishButton.on('pointerdown', () => {
+    // Save the clicked titles and effects
+    for (let articleNum = 1; articleNum <= 6; articleNum++) {
+        const currentTitles = myData['day' + this.currentDay]['article' + articleNum];
+        const selectedTitle = currentTitles[this.currentTitleIndex];
+
+        this.selectedData['article' + articleNum] = {
+            title: selectedTitle ? selectedTitle.title : currentTitles[0].title,
+            effect: selectedTitle ? selectedTitle.effect : currentTitles[0].effect,
+        };
+    }
+
+    // Move to Scene2 and pass data using init
+    this.scene.start('Scene2', { selectedData: this.selectedData });
+});
+
     }
 }
