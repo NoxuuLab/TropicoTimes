@@ -1,4 +1,6 @@
 // Scene1.js
+import { myData } from '/src/scenes/data.js';
+
 export default class Scene1 extends Phaser.Scene {
     constructor() {
         super({ key: 'Scene1' });
@@ -9,10 +11,7 @@ export default class Scene1 extends Phaser.Scene {
 
     create() {
         // Define your data
-        const data = [
-            { title: "Dictator sucks", effect: -1 },
-            { title: "Dictator is awesome", effect: +2 }
-        ];
+        const data = myData;
 
         // Choose random data
         const selectedData = Phaser.Math.RND.pick(data);
@@ -23,13 +22,16 @@ export default class Scene1 extends Phaser.Scene {
                 .setOrigin(0.5)
                 .setInteractive();
         
-            // Log the selected data
-            console.log('showData', this.selectedData);
+           
         
             // Handle button click
             button.on('pointerdown', () => {
                 // Update selectedData with the clicked title
                 this.selectedData = entry;
+                // Log the selected data
+                console.log('showData', this.selectedData);
+
+                button.setFill('#ff0000');
             });
         });
         
