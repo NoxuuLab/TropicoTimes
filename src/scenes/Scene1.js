@@ -29,8 +29,11 @@ export default class Scene1 extends Phaser.Scene {
                 // Update the button text with the rotated title
                 button.setText(currentTitles[this.currentTitleIndex].title);
 
-                // Update selectedData with the clicked title
-                this.selectedData = currentTitles[this.currentTitleIndex];
+                // Update selectedData with the clicked title for the corresponding article
+                this.selectedData['article' + articleNum] = {
+                    title: currentTitles[this.currentTitleIndex].title,
+                    effect: currentTitles[this.currentTitleIndex].effect,
+                };
 
                 // Log the selected data
                 console.log('showData', this.selectedData);
