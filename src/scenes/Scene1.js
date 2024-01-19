@@ -6,7 +6,7 @@ export default class Scene1 extends Phaser.Scene {
         super({ key: 'Scene1' });
 
         // Initialize variables
-        this.selectedData = {};
+        this.selectedData = [];
         this.currentDay = gameData.gameState.currentDay;
         this.currentTitleIndex = 0;
     }
@@ -18,10 +18,13 @@ export default class Scene1 extends Phaser.Scene {
         currentDayData.articles.forEach((article, articleIndex) => {
             const currentTitles = article.headlines;
 
-            this.selectedData['article' + (articleIndex + 1)] = {
-                title: currentTitles[0].title,
-                effect: currentTitles[0].effect,
-            };
+            this.selectedData.push({
+                article: 'article' + (articleIndex + 1),
+                headline: {
+                    title: currentTitles[0].title,
+                    effect: currentTitles[0].effect,
+                },
+            });
         });
     }
 
@@ -46,10 +49,8 @@ export default class Scene1 extends Phaser.Scene {
                 button.setText(currentTitles[this.currentTitleIndex].title);
 
                 // Update selectedData with the clicked title for the corresponding article
-                this.selectedData['article' + (articleIndex + 1)] = {
-                    title: currentTitles[this.currentTitleIndex].title,
-                    effect: currentTitles[this.currentTitleIndex].effect,
-                };
+                this.selectedData[articleIndex].headline.title = currentTitles[this.currentTitleIndex].title;
+                this.selectedData[articleIndex].headline.effect = currentTitles[this.currentTitleIndex].effect;
 
                 // Log the selected data
                 console.log('showData', this.selectedData);
@@ -61,11 +62,16 @@ export default class Scene1 extends Phaser.Scene {
             .setOrigin(0.5)
             .setInteractive();
 
-        // Handle publish button click
         publishButton.on('pointerdown', () => {
-            // No need to save the clicked titles and effects here anymore
-            // because we initialized them in the fill() method
-
+            // Convert selectedData array to an array of objects
+            const selectedArray = this.selectedData.map(item => ({ article: item.article, headline: item.headline.title }));
+        
+            // Update gameData with the selected data
+            gameData.gameState.selected = selectedArray;
+        
+            // Log the updated gameData
+            console.log('Updated gameData:', gameData);
+        
             // Move to Scene2 and pass data using init
             this.scene.start('Scene2', { selectedData: this.selectedData });
         });
