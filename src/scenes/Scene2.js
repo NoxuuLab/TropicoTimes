@@ -22,12 +22,12 @@ export default class Scene2 extends Phaser.Scene {
         const textStyle = { fontSize: '18px', fill: '#fff' };
     
         // Initialize amplification for each title
-        const titleAmplifications = {};
+        const amplifier = {};
     
         Object.keys(this.selectedData).forEach((key, index) => {
             const titleData = this.selectedData[key];
             const title = titleData.title;
-            titleAmplifications[title] = 0; // Default amplification is 0
+            amplifier[title] = 0; // Default amplification is 0
     
             // Display title on the screen
             this.add.text(100, 50 * (index + 1), title, textStyle);
@@ -47,10 +47,10 @@ export default class Scene2 extends Phaser.Scene {
                     }
     
                     // Update the amplification for the current title
-                    titleAmplifications[title] = i;
+                    amplifier[title] = i;
     
                     // Log the values for verification
-                    console.log(`Amplification for ${title}: ${titleAmplifications[title]}`);
+                    console.log(`Amplification for ${title}: ${amplifier[title]}`);
     
                     // Set the selected button color to red
                     button.setFill('#ff0000');
@@ -68,10 +68,14 @@ export default class Scene2 extends Phaser.Scene {
             // Prepare data to pass to Scene3
             const publishData = Object.keys(this.selectedData).map((key) => {
                 const data = this.selectedData[key];
+                const amplifierValue = amplifier[data.title];
+                const amplifiedPost = amplifierValue * data.effect;
+
                 return {
                     title: data.title,
                     effect: data.effect,
-                    titleAmplification: titleAmplifications[data.title],
+                    amplifierValue: amplifierValue,
+                    amplifiedPost: amplifiedPost,
                 };
             });
     
@@ -79,4 +83,4 @@ export default class Scene2 extends Phaser.Scene {
             this.scene.start('Scene3', { publishData });
         });
     }
-}    
+}
