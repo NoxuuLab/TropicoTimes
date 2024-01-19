@@ -16,11 +16,11 @@ export default class Scene3 extends Phaser.Scene {
     console.log('Scene 3 created!');
 
     // Calculate the sum of titleAmplification
-    const sumTitleAmplification = this.publishData.reduce((sum, data) => sum + data.titleAmplification, 0);
+    const sumAmplifiedPost = this.publishData.reduce((sum, data) => sum + data.amplifiedPost, 0);
 
     // Display the sum on the screen
     const textStyle = { fontSize: '24px', fill: '#fff' };
-    this.add.text(400, 300, `Sum of Title Amplification: ${sumTitleAmplification}`, textStyle)
+    this.add.text(400, 300, `Sum of Title Amplification: ${sumAmplifiedPost}`, textStyle)
       .setOrigin(0.5);
   }
 }
