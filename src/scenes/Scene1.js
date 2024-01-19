@@ -12,7 +12,21 @@ export default class Scene1 extends Phaser.Scene {
         this.currentTitleIndex = 0;
     }
 
+    // fill() method to initialize selectedData
+    fill() {
+        for (let articleNum = 1; articleNum <= 6; articleNum++) {
+            const currentTitles = myData['day' + this.currentDay]['article' + articleNum];
+            this.selectedData['article' + articleNum] = {
+                title: currentTitles[0].title,
+                effect: currentTitles[0].effect
+            };
+        }
+    }
+
     create() {
+        // Initialize selectedData with the default values
+        this.fill();
+
         // Create buttons for each article and display their first titles
         for (let articleNum = 1; articleNum <= 6; articleNum++) {
             const currentTitles = myData['day' + this.currentDay]['article' + articleNum];
@@ -45,22 +59,13 @@ export default class Scene1 extends Phaser.Scene {
             .setOrigin(0.5)
             .setInteractive();
 
-       // Handle publish button click
-publishButton.on('pointerdown', () => {
-    // Save the clicked titles and effects
-    for (let articleNum = 1; articleNum <= 6; articleNum++) {
-        const currentTitles = myData['day' + this.currentDay]['article' + articleNum];
-        const selectedTitle = currentTitles[this.currentTitleIndex];
+        // Handle publish button click
+        publishButton.on('pointerdown', () => {
+            // No need to save the clicked titles and effects here anymore
+            // because we initialized them in the fill() method
 
-        this.selectedData['article' + articleNum] = {
-            title: selectedTitle ? selectedTitle.title : currentTitles[0].title,
-            effect: selectedTitle ? selectedTitle.effect : currentTitles[0].effect,
-        };
-    }
-
-    // Move to Scene2 and pass data using init
-    this.scene.start('Scene2', { selectedData: this.selectedData });
-});
-
+            // Move to Scene2 and pass data using init
+            this.scene.start('Scene2', { selectedData: this.selectedData });
+        });
     }
 }
