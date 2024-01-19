@@ -21,14 +21,17 @@ export default class Scene2 extends Phaser.Scene {
         // Display the selectedData on the screen
         const textStyle = { fontSize: '18px', fill: '#fff' };
     
+        // Use nullish coalescing operator to provide a default value for selectedData
+        const articlesData = this.selectedData;
+
         // Initialize amplification for each title
         const amplifier = {};
     
-        Object.keys(this.selectedData).forEach((key, index) => {
-            const titleData = this.selectedData[key];
+        articlesData.forEach((articleData, index) => {
+            const titleData = articleData.headline;
             const title = titleData.title;
-            amplifier[title] = 0; // Default amplification is 0
-    
+            amplifier[title] = 0;
+
             // Display title on the screen
             this.add.text(100, 50 * (index + 1), title, textStyle);
     
@@ -65,22 +68,18 @@ export default class Scene2 extends Phaser.Scene {
     
         // Handle publish button click
         publishButton.on('pointerdown', () => {
-            // Prepare data to pass to Scene3
-            const publishData = Object.keys(this.selectedData).map((key) => {
-                const data = this.selectedData[key];
+            // Modify selectedData array in-place
+            this.selectedData.forEach((data) => {
                 const amplifierValue = amplifier[data.title];
                 const amplifiedPost = amplifierValue * data.effect;
 
-                return {
-                    title: data.title,
-                    effect: data.effect,
-                    amplifierValue: amplifierValue,
-                    amplifiedPost: amplifiedPost,
-                };
+                // Add amplified values to the current data object
+                data.amplifierValue = amplifierValue;
+                data.amplifiedPost = amplifiedPost;
             });
-    
+
             // Move to Scene3 and pass the data using init
-            this.scene.start('Scene3', { publishData });
+            this.scene.start('Scene3', { selectedData: this.selectedData });
         });
     }
 }
