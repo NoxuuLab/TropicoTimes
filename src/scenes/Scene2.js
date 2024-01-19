@@ -70,9 +70,11 @@ export default class Scene2 extends Phaser.Scene {
         publishButton.on('pointerdown', () => {
             // Modify selectedData array in-place
             this.selectedData.forEach((data) => {
-                const amplifierValue = amplifier[data.title];
-                const amplifiedPost = amplifierValue * data.effect;
-
+                const titleData = data.headline;
+                const title = titleData.title;
+                const amplifierValue = amplifier[title];
+                const amplifiedPost = amplifierValue * titleData.effect;
+        
                 // Add amplified values to the current data object
                 data.amplifierValue = amplifierValue;
                 data.amplifiedPost = amplifiedPost;
