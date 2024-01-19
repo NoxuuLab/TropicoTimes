@@ -1,5 +1,5 @@
 // Scene1.js
-import { myData } from '/src/scenes/data.js';
+import gameData from '/src/scenes/gameData.js';
 
 export default class Scene1 extends Phaser.Scene {
     constructor() {
@@ -7,20 +7,22 @@ export default class Scene1 extends Phaser.Scene {
 
         // Initialize variables
         this.selectedData = {};
-        this.currentDay = 1;
-        this.currentArticle = 1;
+        this.currentDay = gameData.gameState.currentDay;
         this.currentTitleIndex = 0;
     }
 
     // fill() method to initialize selectedData
     fill() {
-        for (let articleNum = 1; articleNum <= 6; articleNum++) {
-            const currentTitles = myData['day' + this.currentDay]['article' + articleNum];
-            this.selectedData['article' + articleNum] = {
+        const currentDayData = gameData.gameData.days[this.currentDay - 1];
+
+        currentDayData.articles.forEach((article, articleIndex) => {
+            const currentTitles = article.headlines;
+
+            this.selectedData['article' + (articleIndex + 1)] = {
                 title: currentTitles[0].title,
-                effect: currentTitles[0].effect
+                effect: currentTitles[0].effect,
             };
-        }
+        });
     }
 
     create() {
@@ -28,10 +30,10 @@ export default class Scene1 extends Phaser.Scene {
         this.fill();
 
         // Create buttons for each article and display their first titles
-        for (let articleNum = 1; articleNum <= 6; articleNum++) {
-            const currentTitles = myData['day' + this.currentDay]['article' + articleNum];
+        gameData.gameData.days[this.currentDay - 1].articles.forEach((article, articleIndex) => {
+            const currentTitles = article.headlines;
 
-            const button = this.add.text(400, 50 * articleNum, currentTitles[0].title, { fontSize: '18px', fill: '#fff' })
+            const button = this.add.text(400, 50 * (articleIndex + 1), currentTitles[0].title, { fontSize: '18px', fill: '#fff' })
                 .setOrigin(0.5)
                 .setInteractive();
 
@@ -44,7 +46,7 @@ export default class Scene1 extends Phaser.Scene {
                 button.setText(currentTitles[this.currentTitleIndex].title);
 
                 // Update selectedData with the clicked title for the corresponding article
-                this.selectedData['article' + articleNum] = {
+                this.selectedData['article' + (articleIndex + 1)] = {
                     title: currentTitles[this.currentTitleIndex].title,
                     effect: currentTitles[this.currentTitleIndex].effect,
                 };
@@ -52,7 +54,7 @@ export default class Scene1 extends Phaser.Scene {
                 // Log the selected data
                 console.log('showData', this.selectedData);
             });
-        }
+        });
 
         // Add a "Publish" button to the scene
         const publishButton = this.add.text(600, 500, 'Publish', { fontSize: '32px', fill: '#fff' })
