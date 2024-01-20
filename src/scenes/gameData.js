@@ -63,6 +63,32 @@ const gameData = {
             }
 
           ],
+          "messages":[
+            {
+              "category": "badjob",
+              "message": [
+                { "title": 'you are doing it wrong', "effect": -1 }, 
+                { "title": 'non non non', "effect": 0 }, 
+                { "title": 'your family will be very sad', "effect": 5 }
+              ],
+            },
+            {
+              "category": "excellent",
+              "message": [
+                {"title": "we will win wins", "effect": 5 },
+                {"title": "best champions", "effect": -1 },
+                {"title": "very cool", "effect": 0 }
+              ]
+            },
+            {
+                "category": "neutral",
+                "message": [
+                  {"title": "neutral result", "effect": 5 },
+                  {"title": "no enought", "effect": -1 },
+                  {"title": "dont be neutral", "effect": 0 }
+                ]
+            }
+          ]
         },
         // day 2
         {
@@ -126,12 +152,36 @@ const gameData = {
               }
   
             ],
+
+            "messages":[
+              {
+                "category": "badjob",
+                "message": [
+                  { "title": 'you are doing it wrong 2', "effect": -1 }, 
+                  { "title": 'non non non 2', "effect": 0 }, 
+                  { "title": 'your family will be very sad 2', "effect": 5 }
+                ],
+              },
+              {
+                "category": "excellent",
+                "message": [
+                  {"title": "we will win wins 2", "effect": 5 },
+                  {"title": "best champions 2", "effect": -1 },
+                  {"title": "very cool 2", "effect": 0 }
+                ]
+              },
+              {
+                  "category": "neutral",
+                  "message": [
+                    {"title": "neutral result 2", "effect": 5 },
+                    {"title": "no enought 2", "effect": -1 },
+                    {"title": "dont be neutral 2", "effect": 0 }
+                  ]
+              }
+            ]
+
           }
       ],
-      "messages" : [
-        {"message" : "very good job"},
-        {"message" : "very bad job"},
-      ]
     },
     "gameState": {
       "currentDay": 1,
