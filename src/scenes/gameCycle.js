@@ -11,6 +11,7 @@ export function initializeGameState(gameData) {
         maxDay: gameData.gameData.days.length, // Set the maxDay dynamically based on the dataset
         selected: [],
         history: [],
+        graphData: generateGraphData()
     };
 }
 
@@ -62,5 +63,33 @@ export function openPopup(scene, message) {
       messagePopup.destroy();
       background.destroy();
     });
+  }
+
+  // Function to generate graph data
+function generateGraphData() {
+    let oppositionTrend = 50; // Starting at 50% approval
+    let governmentTrend = 50; // Starting at 50% approval
+    const maxFluctuation = 3; // Maximum fluctuation for each day
+    const graphData = {
+      "opposition": [],
+      "government": []
+    };
+  
+    // Generate data for 14 days
+    for (let i = 0; i < 14; i++) {
+      // Random fluctuation for each day
+      oppositionTrend += (Math.random() - 0.5) * maxFluctuation;
+      governmentTrend += (Math.random() - 0.5) * maxFluctuation;
+  
+      // Clamp the values to stay within 0-100%
+      oppositionTrend = Math.min(100, Math.max(0, oppositionTrend));
+      governmentTrend = Math.min(100, Math.max(0, governmentTrend));
+  
+      // Add the data points to the graphData
+      graphData.opposition.push({ "day": i + 1, "value": oppositionTrend });
+      graphData.government.push({ "day": i + 1, "value": governmentTrend });
+    }
+  
+    return graphData;
   }
   
