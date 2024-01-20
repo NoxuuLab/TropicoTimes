@@ -31,3 +31,36 @@ export function goToNextDay(gameData) {
         // Handle end of the game here
     }
 }
+
+
+// Function to open the popup message
+export function openPopup(scene, message) {
+    // Create a text object for the popup message
+    const messagePopup = scene.add.text(scene.cameras.main.centerX, scene.cameras.main.centerY, message, {
+      fontSize: '24px',
+      fill: '#fff',
+      backgroundColor: '#000',
+      padding: {
+        x: 20,
+        y: 10
+      },
+      wordWrap: { width: 600 }
+    })
+    .setOrigin(0.5)
+    .setInteractive();
+  
+    // Optionally, add a rectangle behind the text to act as a modal background
+    const background = scene.add.rectangle(scene.cameras.main.centerX, scene.cameras.main.centerY, scene.cameras.main.width, scene.cameras.main.height, 0x000000, 0.5)
+      .setOrigin(0.5)
+      .setInteractive();
+  
+    // Bring the popup to the top
+    scene.children.bringToTop(messagePopup);
+  
+    // Add a 'close' listener to the background to hide the popup when clicked
+    background.on('pointerdown', () => {
+      messagePopup.destroy();
+      background.destroy();
+    });
+  }
+  

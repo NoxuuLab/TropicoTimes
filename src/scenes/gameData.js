@@ -127,10 +127,15 @@ const gameData = {
   
             ],
           }
+      ],
+      "messages" : [
+        {"message" : "very good job"},
+        {"message" : "very bad job"},
       ]
     },
     "gameState": {
       "currentDay": 1,
+      "maxDay" : 1,
       "selected": [
         { "article": "<link to article object>", "headline": 1 },
         { "article": "<link to article object>", "headline": 0 }
