@@ -1,5 +1,5 @@
 // Scene3.js
-import { initializeGameState, goToNextDay, openPopup } from './gameCycle.js';
+import { goToNextDay, openPopup } from './gameCycle.js';
 
 
 export default class Scene3 extends Phaser.Scene {
@@ -22,10 +22,27 @@ export default class Scene3 extends Phaser.Scene {
     .setOrigin(0.5)
     .setInteractive();
 
-    // When the "Popup" button is clicked, open the popup with the message
     popupButton.on('pointerdown', () => {
-    openPopup(this, this.gameData.gameData.messages[0].message); // Assuming you want to show the first message
+      const currentDayIndex = this.gameData.gameState.currentDay - 1;
+      const messages = this.gameData.gameData.days[currentDayIndex].messages;
+
+      let category;
+      if (sumAmplifiedPost < 5) {
+        category = "badjob";
+      } else if (sumAmplifiedPost < 30) {
+        category = "neutral";
+      } else {
+        category = "excellent";
+      }
+
+      const categoryMessages = messages.find(m => m.category === category).message;
+      const randomMessageIndex = Math.floor(Math.random() * categoryMessages.length);
+      const message = categoryMessages[randomMessageIndex].title;
+
+      openPopup(this, message);
     });
+
+
 
     let nextDayButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 100, 'Next Day', { fontSize: '32px', fill: '#0f0' })
       .setOrigin(0.5)
