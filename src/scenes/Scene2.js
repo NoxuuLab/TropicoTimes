@@ -3,36 +3,32 @@ export default class Scene2 extends Phaser.Scene {
     constructor() {
         super({ key: 'Scene2' });
 
-        // Initialize variables
-        this.selectedDataWithAmplification = [];
     }
 
     init(data) {
         // Data passed from Scene1
         console.log('Scene 2: Received Data in init:', data.selectedData);
-
-        // Store the received data in the scene's property
         this.selectedData = data.selectedData;
     }
 
     create() {
         console.log('Scene 2 created!');
+        const articlesData = this.selectedData;
     
         // Display the selectedData on the screen
         const textStyle = { fontSize: '18px', fill: '#fff' };
-    
-        // Use nullish coalescing operator to provide a default value for selectedData
-        const articlesData = this.selectedData;
+
+
 
         // Initialize amplification for each title
         const amplifier = {};
     
         articlesData.forEach((articleData, index) => {
-            const titleData = articleData.headline;
-            const title = titleData.title;
+            const headlineData = articleData.headline;
+            const title = headlineData.title;
             amplifier[title] = 0;
 
-            // Display title on the screen
+            // Display titles on the screen
             this.add.text(100, 50 * (index + 1), title, textStyle);
     
             // Add number buttons next to each title
