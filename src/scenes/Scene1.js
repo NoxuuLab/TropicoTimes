@@ -62,18 +62,26 @@ export default class Scene1 extends Phaser.Scene {
             .setOrigin(0.5)
             .setInteractive();
 
+        // In Scene1.js
         publishButton.on('pointerdown', () => {
             // Convert selectedData array to an array of objects
-            const selectedArray = this.selectedData.map(item => ({ article: item.article, headline: item.headline.title }));
-        
+            const selectedArray = this.selectedData.map(item => ({
+                article: item.article,
+                headline: {
+                    title: item.headline.title,
+                    effect: item.headline.effect,
+                },
+            }));
+
             // Update gameData with the selected data
             gameData.gameState.selected = selectedArray;
-        
+
             // Log the updated gameData
             console.log('Updated gameData:', gameData);
-        
+
             // Move to Scene2 and pass data using init
-            this.scene.start('Scene2', { selectedData: this.selectedData });
+            this.scene.start('Scene2', { gameData });
         });
+
     }
 }
