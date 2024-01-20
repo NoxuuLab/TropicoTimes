@@ -103,7 +103,7 @@ const gameData = {
               {
                   "category": "sports",
                   "headlines": [
-                    {"title": "basketball wins", "effect": 5 },
+                    {"title": "basketball wins 2", "effect": 5 },
                     {"title": "basketball sucks", "effect": -1 },
                     {"title": "basketball is neutral", "effect": 0 }
                   ]
@@ -111,7 +111,7 @@ const gameData = {
               {
                   "category": "sports",
                   "headlines": [
-                    {"title": "basketball wins", "effect": 5 },
+                    {"title": "basketball wins 2", "effect": 5 },
                     {"title": "basketball sucks", "effect": -1 },
                     {"title": "basketball is neutral", "effect": 0 }
                   ]
@@ -119,7 +119,7 @@ const gameData = {
               {
                   "category": "sports",
                   "headlines": [
-                    {"title": "basketball wins", "effect": 5 },
+                    {"title": "basketball wins 2", "effect": 5 },
                     {"title": "basketball sucks", "effect": -1 },
                     {"title": "basketball is neutral", "effect": 0 }
                   ]

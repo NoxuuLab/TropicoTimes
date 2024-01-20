@@ -1,42 +1,44 @@
 // Scene1.js
-import gameData from '/src/scenes/gameData.js';
-
 export default class Scene1 extends Phaser.Scene {
     constructor() {
         super({ key: 'Scene1' });
-
-        // Initialize variables
         this.selectedData = [];
-        this.currentDay = gameData.gameState.currentDay;
         this.currentTitleIndex = 0;
+    }
+
+    init(data) {
+        // Use the gameData passed from the previous scene
+        console.log('Received data in Scene1:', data); // Add this line to debug
+        this.gameData = data.gameData;
+        this.currentDay = this.gameData.gameState.currentDay;
+        
+        console.log('Current Day:', this.currentDay)
+        
+        // Initialize selectedData with the default values
+        this.fill();
     }
 
     // fill() method to initialize selectedData
     fill() {
-        const currentDayData = gameData.gameData.days[this.currentDay - 1];
-
-        currentDayData.articles.forEach((article, articleIndex) => {
+        const currentDayData = this.gameData.gameData.days[this.currentDay - 1];
+        this.selectedData = currentDayData.articles.map((article, articleIndex) => {
             const currentTitles = article.headlines;
-
-            this.selectedData.push({
+            return {
                 article: 'article' + (articleIndex + 1),
                 headline: {
                     title: currentTitles[0].title,
                     effect: currentTitles[0].effect,
                 },
-            });
+            };
         });
     }
 
     create() {
-        // Initialize selectedData with the default values
-        this.fill();
-
         // Create buttons for each article and display their first titles
-        gameData.gameData.days[this.currentDay - 1].articles.forEach((article, articleIndex) => {
-            const currentTitles = article.headlines;
+        this.selectedData.forEach((data, articleIndex) => {
+            const currentTitles = this.gameData.gameData.days[this.currentDay - 1].articles[articleIndex].headlines;
 
-            const button = this.add.text(400, 50 * (articleIndex + 1), currentTitles[0].title, { fontSize: '18px', fill: '#fff' })
+            const button = this.add.text(400, 50 * (articleIndex + 1), data.headline.title, { fontSize: '18px', fill: '#fff' })
                 .setOrigin(0.5)
                 .setInteractive();
 
@@ -58,30 +60,19 @@ export default class Scene1 extends Phaser.Scene {
         });
 
         // Add a "Publish" button to the scene
-        const publishButton = this.add.text(600, 500, 'Publish', { fontSize: '32px', fill: '#fff' })
+        const publishButton = this.add.text(600, 550, 'Publish', { fontSize: '32px', fill: '#fff' })
             .setOrigin(0.5)
             .setInteractive();
 
-        // In Scene1.js
         publishButton.on('pointerdown', () => {
-            // Convert selectedData array to an array of objects
-            const selectedArray = this.selectedData.map(item => ({
-                article: item.article,
-                headline: {
-                    title: item.headline.title,
-                    effect: item.headline.effect,
-                },
-            }));
-
             // Update gameData with the selected data
-            gameData.gameState.selected = selectedArray;
+            this.gameData.gameState.selected = this.selectedData;
 
             // Log the updated gameData
-            console.log('Updated gameData:', gameData);
+            console.log('Updated gameData:', this.gameData);
 
             // Move to Scene2 and pass data using init
-            this.scene.start('Scene2', { gameData });
+            this.scene.start('Scene2', { gameData: this.gameData });
         });
-
     }
 }
