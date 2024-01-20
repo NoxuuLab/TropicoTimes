@@ -6,17 +6,17 @@ export default class Scene3 extends Phaser.Scene {
 
   init(data) {
     // Data passed from Scene2
-    console.log('Scene 3: Received Data in init:', data.publishData);
+    console.log('Scene 3: Received Data in init:', data.selectedData);
 
     // Store the received data in the scene's property
-    this.publishData = data.publishData;
+    this.selectedData = data.selectedData;
   }
 
   create() {
     console.log('Scene 3 created!');
 
     // Calculate the sum of titleAmplification
-    const sumAmplifiedPost = this.publishData.reduce((sum, data) => sum + data.amplifiedPost, 0);
+    const sumAmplifiedPost = this.selectedData.reduce((sum, data) => sum + data.amplifiedPost, 0);
 
     // Display the sum on the screen
     const textStyle = { fontSize: '24px', fill: '#fff' };
