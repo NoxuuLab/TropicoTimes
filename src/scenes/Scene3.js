@@ -1,5 +1,5 @@
 // Scene3.js
-import { goToNextDay, openPopup } from './gameCycle.js';
+import { goToNextDay, openPopup, adjustApprovalTrends } from './gameCycle.js';
 
 
 export default class Scene3 extends Phaser.Scene {
@@ -13,11 +13,27 @@ export default class Scene3 extends Phaser.Scene {
   }
 
   create() {
+
+
     const sumAmplifiedPost = this.gameData.gameState.selected.reduce((sum, item) => sum + (item.amplifiedPost || 0), 0);
+    
+    // Call adjustApprovalTrends and get the last and new ratings
+    const {
+        lastPresidenteRating, newPresidenteRating,
+        lastRivieraRating, newRivieraRating
+    } = adjustApprovalTrends(this.gameData, sumAmplifiedPost);
+
+    // Log the last and new ratings
+    console.log(`Last Presidente Rating: ${lastPresidenteRating}, New Presidente Rating: ${newPresidenteRating}`);
+    console.log(`Last Riviera Rating: ${lastRivieraRating}, New Riviera Rating: ${newRivieraRating}`);
 
     const textStyle = { fontSize: '24px', fill: '#fff' };
     this.add.text(400, 300, `Sum of Amplified Posts: ${sumAmplifiedPost}`, textStyle).setOrigin(0.5);
-// Add a "Popup" button to the scene
+
+
+
+
+    // Add a "Popup" button to the scene
     let popupButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 150, 'Popup', { fontSize: '32px', fill: '#f00' })
     .setOrigin(0.5)
     .setInteractive();

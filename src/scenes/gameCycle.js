@@ -3,39 +3,48 @@
 // Import the gameData object
 import gameData from './gameData.js'; 
 
-// Function to initialize the game state
-// gameCycle.js
+// Function to generate trend data for a candidate
+export function generateCandidateTrend(startingApproval, trend, days) {
+  let approvalRatings = [];
+  let currentApproval = startingApproval;
+  
+  for (let i = 0; i < days; i++) {
+    // Add random fluctuation to the current approval rating
+    let fluctuation = (Math.random() * 10 - 5); // Random number between -5 and 5
+    currentApproval += fluctuation + trend;
 
-// ... other imports and functions ...
+    // Ensure approval rating is within bounds
+    currentApproval = Math.max(0, Math.min(100, currentApproval));
+
+    approvalRatings.push(currentApproval);
+  }
+  
+  return approvalRatings;
+}
 
 // Updated function to initialize the entire game state
 export function initializeGameState(gameData) {
+  // Generate trend data for each candidate
+  const days = 14;
+  const startingApproval = 50; // Starting approval rating
+  const rivieraTrend = generateCandidateTrend(startingApproval, 0.5, days);
+  const presidenteTrend = generateCandidateTrend(startingApproval, -0.5, days);
+
   // Update maxDay with the length of the days array in gameData
   gameData.gameState = {
       currentDay: 1,
       maxDay: gameData.gameData.days.length, // Set the maxDay dynamically based on the dataset
       selected: [],
-      history: []
-  };
-
-  // Generate trend data for each candidate
-  const days = 14; // Number of days for the trend
-  const startingApproval = 50; // Starting approval rating
-  const rivieraTrend = generateCandidateTrend(startingApproval, 0.5, days);
-  const presidenteTrend = generateCandidateTrend(startingApproval, -0.5, days);
-
-  // Insert the trend data
-  gameData.gameState['approvalTrends'] = {
-      'riviera': rivieraTrend,
-      'presidente': presidenteTrend
+      history: [],
+      approvalTrends: {
+        'riviera': rivieraTrend,
+        'presidente': presidenteTrend
+      }
   };
 
   // Logging the initial data
   console.log("Game state initialized with approval trends:", gameData.gameState['approvalTrends']);
 }
-
-// ... other exports and functions ...
-
 
 // Function to go to the next day
 export function goToNextDay(gameData) {
@@ -87,42 +96,44 @@ export function openPopup(scene, message) {
     });
   }
 
- 
-  // Function to generate trend data for a candidate
-  export function generateCandidateTrend(startingApproval, trend, days) {
-    let approvalRatings = [];
-    let currentApproval = startingApproval;
+
+    export function adjustApprovalTrends(gameData, sumAmplifiedPost) {
+      // Get the last index of the trends array for each candidate
+      let lastPresidenteIndex = gameData.gameState.approvalTrends.presidente.length - 1;
+      let lastRivieraIndex = gameData.gameState.approvalTrends.riviera.length - 1;
     
-    for (let i = 0; i < days; i++) {
-      // Add random fluctuation to the current approval rating
-      let fluctuation = (Math.random() * 10 - 5); // Random number between -5 and 5
-      currentApproval += fluctuation + trend;
-
-      // Ensure approval rating is within bounds
-      currentApproval = Math.max(0, Math.min(100, currentApproval));
-
-      approvalRatings.push(currentApproval);
+      // Get the last approval rating value for each candidate
+      let lastPresidenteRating = gameData.gameState.approvalTrends.presidente[lastPresidenteIndex];
+      let lastRivieraRating = gameData.gameState.approvalTrends.riviera[lastRivieraIndex];
+    
+      // Log the last values before the change
+      console.log(`Last Presidente Rating: ${lastPresidenteRating}`);
+      console.log(`Last Riviera Rating: ${lastRivieraRating}`);
+    
+      // Calculate new ratings, ensuring they are within 0-100%
+      let newPresidenteRating = Math.min(100, Math.max(0, lastPresidenteRating + sumAmplifiedPost));
+      let newRivieraRating = Math.min(100, Math.max(0, lastRivieraRating - sumAmplifiedPost));
+    
+      // Log the new values after the change
+      console.log(`New Presidente Rating: ${newPresidenteRating}`);
+      console.log(`New Riviera Rating: ${newRivieraRating}`);
+    
+      // Update the trends with the new ratings by appending the new value to the end of the array
+      gameData.gameState.approvalTrends.presidente.push(newPresidenteRating);
+      gameData.gameState.approvalTrends.riviera.push(newRivieraRating);
+    
+      return {
+        lastPresidenteRating, 
+        newPresidenteRating,
+        lastRivieraRating, 
+        newRivieraRating
+    };
     }
     
-    return approvalRatings;
-  }
-
-    // Generate trend data for each candidate
-    const days = 14;
-    const rivieraTrend = generateCandidateTrend(50, 0.5, days);
-    const presidenteTrend = generateCandidateTrend(50, -0.5, days);
-
-    // Insert this trend data into the gameData object
-    export function injectTrendDataIntoGameState(gameData, rivieraTrend, presidenteTrend) {
-      // Inserting the data under `gameState` within the gameData object
-      gameData.gameState['approvalTrends'] = {
-        'riviera': rivieraTrend,
-        'presidente': presidenteTrend
-      };
     
-      // Logging the initial data
-      console.log("Initial data injected into gameData:", gameData.gameState['approvalTrends']);
-    }
+    
+    
+    
 
 
   
