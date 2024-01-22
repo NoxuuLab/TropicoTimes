@@ -1,19 +1,41 @@
 // gameCycle.js
 
 // Import the gameData object
-import gameData from './gameData.js'; // Update the path accordingly
+import gameData from './gameData.js'; 
 
 // Function to initialize the game state
+// gameCycle.js
+
+// ... other imports and functions ...
+
+// Updated function to initialize the entire game state
 export function initializeGameState(gameData) {
-    // Update maxDay with the length of the days array in gameData
-    gameData.gameState = {
-        currentDay: 1,
-        maxDay: gameData.gameData.days.length, // Set the maxDay dynamically based on the dataset
-        selected: [],
-        history: [],
-        graphData: generateGraphData()
-    };
+  // Update maxDay with the length of the days array in gameData
+  gameData.gameState = {
+      currentDay: 1,
+      maxDay: gameData.gameData.days.length, // Set the maxDay dynamically based on the dataset
+      selected: [],
+      history: []
+  };
+
+  // Generate trend data for each candidate
+  const days = 14; // Number of days for the trend
+  const startingApproval = 50; // Starting approval rating
+  const rivieraTrend = generateCandidateTrend(startingApproval, 0.5, days);
+  const presidenteTrend = generateCandidateTrend(startingApproval, -0.5, days);
+
+  // Insert the trend data
+  gameData.gameState['approvalTrends'] = {
+      'riviera': rivieraTrend,
+      'presidente': presidenteTrend
+  };
+
+  // Logging the initial data
+  console.log("Game state initialized with approval trends:", gameData.gameState['approvalTrends']);
 }
+
+// ... other exports and functions ...
+
 
 // Function to go to the next day
 export function goToNextDay(gameData) {
@@ -65,31 +87,42 @@ export function openPopup(scene, message) {
     });
   }
 
-  // Function to generate graph data
-function generateGraphData() {
-    let oppositionTrend = 50; // Starting at 50% approval
-    let governmentTrend = 50; // Starting at 50% approval
-    const maxFluctuation = 3; // Maximum fluctuation for each day
-    const graphData = {
-      "opposition": [],
-      "government": []
-    };
-  
-    // Generate data for 14 days
-    for (let i = 0; i < 14; i++) {
-      // Random fluctuation for each day
-      oppositionTrend += (Math.random() - 0.5) * maxFluctuation;
-      governmentTrend += (Math.random() - 0.5) * maxFluctuation;
-  
-      // Clamp the values to stay within 0-100%
-      oppositionTrend = Math.min(100, Math.max(0, oppositionTrend));
-      governmentTrend = Math.min(100, Math.max(0, governmentTrend));
-  
-      // Add the data points to the graphData
-      graphData.opposition.push({ "day": i + 1, "value": oppositionTrend });
-      graphData.government.push({ "day": i + 1, "value": governmentTrend });
+ 
+  // Function to generate trend data for a candidate
+  export function generateCandidateTrend(startingApproval, trend, days) {
+    let approvalRatings = [];
+    let currentApproval = startingApproval;
+    
+    for (let i = 0; i < days; i++) {
+      // Add random fluctuation to the current approval rating
+      let fluctuation = (Math.random() * 10 - 5); // Random number between -5 and 5
+      currentApproval += fluctuation + trend;
+
+      // Ensure approval rating is within bounds
+      currentApproval = Math.max(0, Math.min(100, currentApproval));
+
+      approvalRatings.push(currentApproval);
     }
-  
-    return graphData;
+    
+    return approvalRatings;
   }
+
+    // Generate trend data for each candidate
+    const days = 14;
+    const rivieraTrend = generateCandidateTrend(50, 0.5, days);
+    const presidenteTrend = generateCandidateTrend(50, -0.5, days);
+
+    // Insert this trend data into the gameData object
+    export function injectTrendDataIntoGameState(gameData, rivieraTrend, presidenteTrend) {
+      // Inserting the data under `gameState` within the gameData object
+      gameData.gameState['approvalTrends'] = {
+        'riviera': rivieraTrend,
+        'presidente': presidenteTrend
+      };
+    
+      // Logging the initial data
+      console.log("Initial data injected into gameData:", gameData.gameState['approvalTrends']);
+    }
+
+
   
