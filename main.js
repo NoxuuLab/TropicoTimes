@@ -9,6 +9,7 @@ const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
+  parent: 'game-container',
   scene: [BootScene, Scene1, Scene2, Scene3, FinishScene]
 };
 
