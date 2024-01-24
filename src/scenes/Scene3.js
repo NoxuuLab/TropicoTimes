@@ -53,9 +53,9 @@ export default class Scene3 extends Phaser.Scene {
     canvas.style.width = '500px !important';
     canvas.style.height = '300px !important';
     canvas.style.position = 'absolute';
-    canvas.style.left = `${rect.left}px`; // Use the game container's position
-    canvas.style.top = `${rect.top}px`; // Use the game container's position
-    canvas.style.zIndex = '10'; // Ensure it's on top of other elements
+    canvas.style.left = `${rect.left}px`; 
+    canvas.style.top = `${rect.top}px`; 
+    canvas.style.zIndex = '10'; 
   
     gameContainer.appendChild(canvas);
 
@@ -70,7 +70,7 @@ export default class Scene3 extends Phaser.Scene {
           type: 'number',
           easing: 'linear',
           duration: delayBetweenPoints,
-          from: NaN, // the point is initially skipped
+          from: NaN, 
           delay(ctx) {
             if (ctx.type !== 'data' || ctx.xStarted) {
               return 0;
@@ -114,27 +114,27 @@ export default class Scene3 extends Phaser.Scene {
         },
         options: {
           animation: animation,
-          responsive: false, // Add this line
+          responsive: false, 
           scales: {
             x: {
-              type: 'linear', // Define as linear for numerical data
-              min: 0,         // Start at 0 for days
-              max: 25,        // Set to max number of days
+              type: 'linear', 
+              min: 0,         
+              max: 25,        
               title: {
                 display: true,
                 text: 'Day'
               }
             },
             y: {
-              min: 0,         // Approval rating starts at 0
-              max: 100,       // Maximum approval rating is 100
+              min: 0,         
+              max: 100,       
               title: {
                 display: true,
                 text: 'Approval Rating (%)'
               }
             }
           },
-          // Rest of your options like animation, interaction, plugins, etc.
+          
         }
       };
       
