@@ -1,4 +1,3 @@
-// Scene2.js
 export default class Scene2 extends Phaser.Scene {
     constructor() {
         super({ key: 'Scene2' });
@@ -12,66 +11,117 @@ export default class Scene2 extends Phaser.Scene {
         // Log the selected data
         console.log('Scene 2: Selected Data:', this.articlesData);
     }
-
     create() {
-        console.log('Scene 2 created!');
-        // Display the selectedData on the screen
-        const textStyle = { fontSize: '18px', fill: '#fff' };
+        this.cellWidth = 80;
+        this.cellHeight = 80;
+        this.gridRows = 6; // Set the number of rows
+        this.gridColumns = 4; // Set the number of columns
+        this.grid = [];
+        // Calculate grid start position
+            // Calculate grid start position
+        let rightMargin = 20;
+        let totalGridWidth = this.cellWidth * this.gridColumns;
+        let offsetX = this.cameras.main.width - totalGridWidth - rightMargin;
+        let offsetY = (this.cameras.main.height - this.gridRows * this.cellHeight) / 2;
 
-        // Initialize amplification for each article
-        this.amplifier = new Array(this.articlesData.length).fill(0);
 
-        this.articlesData.forEach((articleData, index) => {
-            const title = articleData.headline.title; // Correctly references the title property
+        let graphics = this.add.graphics({ lineStyle: { color: 0xfff, width: 2 } });
 
-            // Display titles on the screen
-            this.add.text(100, 50 * (index + 1), title, textStyle);
 
-            // Add number buttons next to each title
-            for (let i = 1; i <= 3; i++) {
-                const button = this.add.text(250 + 50 * i, 50 * (index + 1), i.toString(), textStyle)
-                    .setOrigin(0.5)
-                    .setInteractive();
+        // Create grid cells
+        for (let y = 0; y < this.gridRows; y++) {
+            for (let x = 0; x < this.gridColumns; x++) {
+                let rectX = offsetX + x * this.cellWidth;
+                let rectY = offsetY + y * this.cellHeight;
+                
+                // Draw cell
+                graphics.strokeRect(rectX, rectY, this.cellWidth, this.cellHeight);
+                
+                // Create a Rectangle object for each cell for overlap checks
+                let cell = new Phaser.Geom.Rectangle(rectX, rectY, this.cellWidth, this.cellHeight);
+                this.grid.push(cell);
+            }
+        }
 
-                // Add button click event
-                button.on('pointerdown', () => {
-                    // Update the amplification for the current article
-                    this.amplifier[index] = i;
+        // Display the titles on the screen and create draggable amplification squares
 
-                    // Log the values for verification
-                    console.log(`Amplification for ${title}: ${this.amplifier[index]}`);
+this.articlesData.forEach((articleData, index) => {
+    const title = articleData.headline.title;
+    const textStyle = { fontSize: '18px', fill: '#fff' };
 
-                    // Visual feedback for the selected button
-                    this.children.each(child => {
-                        if (child.name && child.name.startsWith(`button_${index}_`)) {
-                            child.setFill('#fff'); // Reset other buttons to white
-                        }
-                    });
-                    button.setFill('#ff0000'); // Set the selected button color to red
-                }).setName(`button_${index}_${i}`);
+    // Calculate the y position for this article title and squares
+    // You can adjust 'verticalSpacing' to increase the space between rows if needed
+    const verticalSpacing = 20;
+    let articleY = verticalSpacing + (this.cellHeight + verticalSpacing) * index;
+
+    // Display article titles on the screen at a fixed x-coordinate
+    // 'articleX' is the x-coordinate for all the article titles
+    const articleX = 100;
+    this.add.text(articleX, articleY, title, textStyle);
+
+    // Create draggable amplification squares
+    // 'squareStartX' is the x-coordinate for the first square of each article
+    // It must be to the right of the longest possible article title
+    const squareStartX = 300; // You can adjust this to ensure squares are placed correctly
+    const sizes = [
+        { width: 30, height: 30 }, // Big square
+        { width: 20, height: 20 }, // Medium square
+        { width: 10, height: 20 }  // Small rectangle
+    ];
+    const horizontalSpacing = 10; // Space between squares
+
+    sizes.forEach((size, i) => {
+        // Create the squares at the same y-coordinate as the article title for alignment
+        const square = this.add.rectangle(
+            squareStartX + i * (size.width + horizontalSpacing), // Adjust x position for each square
+            articleY, // Same y-coordinate as the article title for top alignment
+            size.width, 
+            size.height, 
+            0x666666
+        ).setOrigin(0, 0) // Set origin to the top-left to align the tops
+         .setInteractive();
+
+        this.input.setDraggable(square);
+
+        // Set a name for the square
+        square.setName(`amplification_${index}_${i+1}`);
+
+        // Store the amplification value in the square's data
+        square.setData('amplification', i+1);
+
+        // Dragging logic
+        square.on('dragstart', (pointer, dragX, dragY) => {
+            // You can change the appearance or set an offset here if needed
+        });
+
+        square.on('drag', (pointer, dragX, dragY) => {
+            square.x = dragX;
+            square.y = dragY;
+        });
+
+        square.on('dragend', (pointer) => {
+            // Snap to grid logic here
+            // Check if the square's position overlaps with any grid cells
+            const droppedOnGrid = this.checkIfSquareDroppedOnGrid(square);
+            if (droppedOnGrid) {
+                // If dropped on the grid, place it there
+                // Update the amplification for the current article
+                this.amplifier[index] = square.data.get('amplification');
+                console.log(`Amplification for ${title}: ${this.amplifier[index]}`);
+            } else {
+                // If not dropped on a valid location, reset position
+                square.x = square.input.dragStartX;
+                square.y = square.input.dragStartY;
             }
         });
+    });
+});
 
-        // Add a "Publish" button to the scene
-        const publishButton = this.add.text(600, 500, 'Publish', { fontSize: '32px', fill: '#fff' })
-            .setOrigin(0.5)
-            .setInteractive();
 
-        // Handle publish button click
-        publishButton.on('pointerdown', () => {
-            // Update selectedData array with amplification values
-            this.articlesData.forEach((item, index) => {
-                const effect = item.headline.effect;
-                const amplifierValue = this.amplifier[index];
-                item.amplifiedPost = amplifierValue * effect; // Calculate the amplified post value
-                item.amplifierValue = amplifierValue; // Store the amplifier value
-            });
-
-            // Log the final data for verification
-            console.log('Final data to publish:', this.articlesData);
-
-            // Move to Scene3 and pass the data using init
-            this.scene.start('Scene3', { gameData: this.gameData });
-        });
-    }
 }
+checkIfSquareDroppedOnGrid(square) {
+    // Check overlap with grid cells and return true if the square is dropped on a valid cell
+    // You can use the code from the previous example here to check for overlaps
+}
+}
+
