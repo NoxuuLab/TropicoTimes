@@ -18,7 +18,6 @@ export default class Scene2 extends Phaser.Scene {
         this.gridColumns = 4; // Set the number of columns
         this.grid = [];
         // Calculate grid start position
-            // Calculate grid start position
         let rightMargin = 20;
         let totalGridWidth = this.cellWidth * this.gridColumns;
         let offsetX = this.cameras.main.width - totalGridWidth - rightMargin;
@@ -51,7 +50,7 @@ this.articlesData.forEach((articleData, index) => {
 
     // Calculate the y position for this article title and squares
     // You can adjust 'verticalSpacing' to increase the space between rows if needed
-    const verticalSpacing = 20;
+    const verticalSpacing = 40;
     let articleY = verticalSpacing + (this.cellHeight + verticalSpacing) * index;
 
     // Display article titles on the screen at a fixed x-coordinate
@@ -71,17 +70,47 @@ this.articlesData.forEach((articleData, index) => {
     const horizontalSpacing = 10; // Space between squares
 
     sizes.forEach((size, i) => {
+        // Calculate initial position for each square
+        const initialX = squareStartX + i * (size.width + horizontalSpacing);
+        const initialY = articleY;
+    
         // Create the squares at the same y-coordinate as the article title for alignment
         const square = this.add.rectangle(
-            squareStartX + i * (size.width + horizontalSpacing), // Adjust x position for each square
-            articleY, // Same y-coordinate as the article title for top alignment
+            initialX,
+            initialY, 
             size.width, 
             size.height, 
             0x666666
-        ).setOrigin(0, 0) // Set origin to the top-left to align the tops
-         .setInteractive();
+        )
+        .setOrigin(0, 0) // Set origin to the top-left to align the tops
+        .setInteractive()
+        .setData('initialSize', { width: size.width, height: size.height })
+        .setData('initialPosition', { x: initialX, y: initialY });
+    
 
         this.input.setDraggable(square);
+
+        // Add a pointerdown event listener to the square
+    square.on('pointerdown', () => {
+        // Define new sizes for the squares
+        let newSize;
+        if (square.width === 30 && square.height === 30) {
+            newSize = { width: 240, height: 240 }; // New size for large square
+        } else if (square.width === 20 && square.height === 20) {
+            newSize = { width: 160, height: 160 }; // New size for medium square
+        } else if (square.width === 10 && square.height === 20) {
+            newSize = { width: 80, height: 160 }; // New size for small rectangle
+        }
+        
+        // Apply the new size to the square
+        square.setSize(newSize.width, newSize.height);
+        square.setDisplaySize(newSize.width, newSize.height);
+
+        // You may need to adjust the origin or position if needed
+        square.setOrigin(0.5); // This centers the origin on the square - adjust as needed
+    });
+
+        
 
         // Set a name for the square
         square.setName(`amplification_${index}_${i+1}`);
@@ -99,21 +128,61 @@ this.articlesData.forEach((articleData, index) => {
             square.y = dragY;
         });
 
-        square.on('dragend', (pointer) => {
-            // Snap to grid logic here
-            // Check if the square's position overlaps with any grid cells
-            const droppedOnGrid = this.checkIfSquareDroppedOnGrid(square);
-            if (droppedOnGrid) {
-                // If dropped on the grid, place it there
-                // Update the amplification for the current article
-                this.amplifier[index] = square.data.get('amplification');
-                console.log(`Amplification for ${title}: ${this.amplifier[index]}`);
-            } else {
-                // If not dropped on a valid location, reset position
-                square.x = square.input.dragStartX;
-                square.y = square.input.dragStartY;
-            }
-        });
+ // ... rest of your code
+
+ square.on('dragend', (pointer) => {
+    let snapped = false;
+
+    // Loop through each cell in the grid
+    for (let cell of this.grid) {
+        // Calculate the snapped position for the top-left corner of the square
+        let snappedTopLeftX = Phaser.Math.Snap.To(pointer.x - square.displayWidth * 0.5, this.cellWidth) + this.cellWidth * 0.5;
+        let snappedTopLeftY = Phaser.Math.Snap.To(pointer.y - square.displayHeight * 0.5, this.cellHeight) + this.cellHeight * 0.5;
+
+        // Calculate the bounds of the square with the snapped positions
+        let squareBounds = new Phaser.Geom.Rectangle(
+            snappedTopLeftX - square.displayWidth * 0.5,
+            snappedTopLeftY - square.displayHeight * 0.5,
+            square.displayWidth,
+            square.displayHeight
+        );
+
+        // Check if the snapped position would keep the square entirely within the grid bounds
+        let isWithinGridBounds =
+            squareBounds.left >= offsetX &&
+            squareBounds.right <= offsetX + totalGridWidth &&
+            squareBounds.top >= offsetY &&
+            squareBounds.bottom <= offsetY + this.cellHeight * this.gridRows;
+
+        // Only snap the square into place if it fits entirely within the grid
+        if (isWithinGridBounds) {
+            // Adjust the square's position to the snapped coordinates
+            square.x = snappedTopLeftX;
+            square.y = snappedTopLeftY;
+            snapped = true;
+            break; // Exit the loop as we've snapped to a cell
+        }
+    }
+
+    // If the square wasn't snapped to a grid cell, reset its position and size
+    if (!snapped) {
+        // Reset to initial size and position if it doesn't fit within the grid
+        const initialSize = square.data.get('initialSize');
+        square.setSize(initialSize.width, initialSize.height);
+        square.setDisplaySize(initialSize.width, initialSize.height);
+
+        const initialPosition = square.data.get('initialPosition');
+        square.x = initialPosition.x;
+        square.y = initialPosition.y;
+
+        square.setOrigin(0, 0); // Reset the origin if it has been changed
+    }
+});
+
+
+
+// ... rest of your code
+
     });
 });
 
