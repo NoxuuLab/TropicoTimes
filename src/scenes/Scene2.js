@@ -91,24 +91,20 @@ this.articlesData.forEach((articleData, index) => {
         this.input.setDraggable(square);
 
         // Add a pointerdown event listener to the square
-    square.on('pointerdown', () => {
-        // Define new sizes for the squares
-        let newSize;
-        if (square.width === 30 && square.height === 30) {
-            newSize = { width: 240, height: 240 }; // New size for large square
-        } else if (square.width === 20 && square.height === 20) {
-            newSize = { width: 160, height: 160 }; // New size for medium square
-        } else if (square.width === 10 && square.height === 20) {
-            newSize = { width: 80, height: 160 }; // New size for small rectangle
-        }
-        
-        // Apply the new size to the square
-        square.setSize(newSize.width, newSize.height);
-        square.setDisplaySize(newSize.width, newSize.height);
-
-        // You may need to adjust the origin or position if needed
-        square.setOrigin(0.5); // This centers the origin on the square - adjust as needed
-    });
+        square.on('pointerdown', function () {
+            // Set the square's new size based on which square it is
+            // The origin remains at the top-left corner (0, 0)
+            if (this.width === 30 && this.height === 30) {
+                this.setData('newSize', { width: 240, height: 240 });
+            } else if (this.width === 20 && this.height === 20) {
+                this.setData('newSize', { width: 160, height: 160 });
+            } else if (this.width === 10 && this.height === 20) {
+                this.setData('newSize', { width: 80, height: 160 });
+            }
+            // Expand the square visually to the new size
+            this.setSize(this.data.get('newSize').width, this.data.get('newSize').height);
+            
+        });
 
         
 
@@ -131,53 +127,56 @@ this.articlesData.forEach((articleData, index) => {
  // ... rest of your code
 
  square.on('dragend', (pointer) => {
-    let snapped = false;
+    // Assuming 'this' refers to the scene context where the grid properties are defined
+    let offsetX = this.cameras.main.width - this.cellWidth * this.gridColumns - rightMargin;
+    let offsetY = (this.cameras.main.height - this.gridRows * this.cellHeight) / 2;
+    
+    // Calculate the position relative to the grid's top-left corner
+    let relativeX = pointer.x - offsetX - square.displayWidth * square.originX;
+    let relativeY = pointer.y - offsetY - square.displayHeight * square.originY;
 
-    // Loop through each cell in the grid
-    for (let cell of this.grid) {
-        // Calculate the snapped position for the top-left corner of the square
-        let snappedTopLeftX = Phaser.Math.Snap.To(pointer.x - square.displayWidth * 0.5, this.cellWidth) + this.cellWidth * 0.5;
-        let snappedTopLeftY = Phaser.Math.Snap.To(pointer.y - square.displayHeight * 0.5, this.cellHeight) + this.cellHeight * 0.5;
+    // Snap to the nearest cell
+    let snappedX = Phaser.Math.Snap.To(relativeX, this.cellWidth);
+    let snappedY = Phaser.Math.Snap.To(relativeY, this.cellHeight);
 
-        // Calculate the bounds of the square with the snapped positions
-        let squareBounds = new Phaser.Geom.Rectangle(
-            snappedTopLeftX - square.displayWidth * 0.5,
-            snappedTopLeftY - square.displayHeight * 0.5,
-            square.displayWidth,
-            square.displayHeight
-        );
+    // Make sure the snapped position isn't outside the grid boundaries
+    snappedX = Math.min(snappedX, this.cellWidth * (this.gridColumns - 1));
+    snappedY = Math.min(snappedY, this.cellHeight * (this.gridRows - 1));
 
-        // Check if the snapped position would keep the square entirely within the grid bounds
-        let isWithinGridBounds =
-            squareBounds.left >= offsetX &&
-            squareBounds.right <= offsetX + totalGridWidth &&
-            squareBounds.top >= offsetY &&
-            squareBounds.bottom <= offsetY + this.cellHeight * this.gridRows;
+    // Adjust back to absolute positioning considering the square's origin
+    snappedX += offsetX + square.displayWidth * square.originX;
+    snappedY += offsetY + square.displayHeight * square.originY;
 
-        // Only snap the square into place if it fits entirely within the grid
-        if (isWithinGridBounds) {
-            // Adjust the square's position to the snapped coordinates
-            square.x = snappedTopLeftX;
-            square.y = snappedTopLeftY;
-            snapped = true;
-            break; // Exit the loop as we've snapped to a cell
-        }
-    }
+    // Update the position of the square to the snapped position
+    square.x = snappedX;
+    square.y = snappedY;
 
-    // If the square wasn't snapped to a grid cell, reset its position and size
-    if (!snapped) {
-        // Reset to initial size and position if it doesn't fit within the grid
+    // Check if the snapped position is within the grid boundaries
+    let isWithinGridBounds =
+        snappedX >= offsetX &&
+        snappedX + square.width <= offsetX + totalGridWidth &&
+        snappedY >= offsetY &&
+        snappedY + square.height <= offsetY + this.cellHeight * this.gridRows;
+
+    // If the square can fit entirely within the grid cell, snap it into place
+    if (isWithinGridBounds) {
+        // Set the top-left corner of the square to the snapped position
+        square.x = snappedX;
+        square.y = snappedY;
+    } else {
+        // If the square cannot fit within the grid, reset to its initial position and size
         const initialSize = square.data.get('initialSize');
+        const initialPosition = square.data.get('initialPosition');
+
         square.setSize(initialSize.width, initialSize.height);
         square.setDisplaySize(initialSize.width, initialSize.height);
-
-        const initialPosition = square.data.get('initialPosition');
-        square.x = initialPosition.x;
-        square.y = initialPosition.y;
-
-        square.setOrigin(0, 0); // Reset the origin if it has been changed
+        square.setPosition(initialPosition.x, initialPosition.y);
+        // The origin is already at the top-left corner
     }
 });
+
+
+
 
 
 
