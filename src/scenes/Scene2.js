@@ -65,9 +65,11 @@ this.articlesData.forEach((articleData, index) => {
     // It must be to the right of the longest possible article title
     const squareStartX = 300; // You can adjust this to ensure squares are placed correctly
     const sizes = [
-        { width: 30, height: 30 }, // Big square
-        { width: 20, height: 20 }, // Medium square
-        { width: 10, height: 20 }  // Small rectangle
+        { width: 10, height: 20, amplification: 1 },
+        { width: 20, height: 20, amplification: 2 },
+        { width: 30, height: 30, amplification: 3 } // Large square
+         // Medium square
+         // Small rectangle
     ];
     const horizontalSpacing = 10; // Space between squares
 
@@ -88,8 +90,9 @@ this.articlesData.forEach((articleData, index) => {
         .setInteractive()
         .setData('initialSize', { width: size.width, height: size.height })
         .setData('initialPosition', { x: initialX, y: initialY })
-        .setData('articleTitle', title); // Attach the article's title to the square
-    
+        .setData('articleTitle', title) // Attach the article's title to the square
+        .setData('amplification', size.amplification); // Use the amplification value from the size object
+
 
         this.input.setDraggable(square);
 
@@ -109,7 +112,8 @@ this.articlesData.forEach((articleData, index) => {
             
             // Retrieve the article's title or identifier from the square
             const articleTitle = square.getData('articleTitle');
-
+            console.log(`DragEnd Amplification for ${square.getData('articleTitle')}: ${square.getData('amplification')}`);
+          
         });
 
         
@@ -118,7 +122,7 @@ this.articlesData.forEach((articleData, index) => {
         square.setName(`amplification_${index}_${i+1}`);
 
         // Store the amplification value in the square's data
-        square.setData('amplification', i+1);
+      
 
         // Dragging logic
         square.on('dragstart', (pointer, dragX, dragY) => {
@@ -197,7 +201,7 @@ this.articlesData.forEach((articleData, index) => {
 checkIfSquareDroppedOnGrid(square) {
     // Check overlap with grid cells and return true if the square is dropped on a valid cell
     // You can use the code from the previous example here to check for overlaps
-
+    console.log(`Drop Check Amplification for ${square.getData('articleTitle')}: ${square.getData('amplification')}`);
         let droppedOnGrid = false;
         let squareBounds = new Phaser.Geom.Rectangle(square.x, square.y, square.width, square.height);
         // Assuming 'this.grid' contains your grid cell definitions
@@ -215,8 +219,7 @@ checkIfSquareDroppedOnGrid(square) {
     
                 // Update the amplifier value in your tracking object
                 this.amplifiers[articleTitle] = amplifierValue;
-    
-                console.log(`Square for ${articleTitle} dropped on grid. Amplifier set to ${amplifierValue}.`);
+
             }
         });
     
