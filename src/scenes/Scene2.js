@@ -10,6 +10,8 @@ export default class Scene2 extends Phaser.Scene {
         this.articlesData = this.gameData.gameState.selected;
         // Log the selected data
         console.log('Scene 2: Selected Data:', this.articlesData);
+        this.amplifiers = {}; // Maps article title to its amplifier value
+
     }
     create() {
         this.cellWidth = 80;
@@ -85,7 +87,8 @@ this.articlesData.forEach((articleData, index) => {
         .setOrigin(0, 0) // Set origin to the top-left to align the tops
         .setInteractive()
         .setData('initialSize', { width: size.width, height: size.height })
-        .setData('initialPosition', { x: initialX, y: initialY });
+        .setData('initialPosition', { x: initialX, y: initialY })
+        .setData('articleTitle', title); // Attach the article's title to the square
     
 
         this.input.setDraggable(square);
@@ -104,6 +107,9 @@ this.articlesData.forEach((articleData, index) => {
             // Expand the square visually to the new size
             this.setSize(this.data.get('newSize').width, this.data.get('newSize').height);
             
+            // Retrieve the article's title or identifier from the square
+            const articleTitle = square.getData('articleTitle');
+
         });
 
         
@@ -173,6 +179,7 @@ this.articlesData.forEach((articleData, index) => {
         square.setPosition(initialPosition.x, initialPosition.y);
         // The origin is already at the top-left corner
     }
+    this.checkIfSquareDroppedOnGrid(square);
 });
 
 
@@ -190,6 +197,38 @@ this.articlesData.forEach((articleData, index) => {
 checkIfSquareDroppedOnGrid(square) {
     // Check overlap with grid cells and return true if the square is dropped on a valid cell
     // You can use the code from the previous example here to check for overlaps
+
+        let droppedOnGrid = false;
+        let squareBounds = new Phaser.Geom.Rectangle(square.x, square.y, square.width, square.height);
+        // Assuming 'this.grid' contains your grid cell definitions
+        this.grid.forEach((cell) => {
+            if (Phaser.Geom.Rectangle.Overlaps(cell, squareBounds)) {
+                droppedOnGrid = true;
+    
+                // Assuming square.data contains 'articleTitle'
+                const articleTitle = square.data.get('articleTitle');
+    
+                // Update the amplifier value based on the size of the square
+                // This assumes you have a way to determine the amplifier value from the square
+                // For example, using square size or a data attribute you've set
+                let amplifierValue = square.data.get('amplification'); // Or calculate based on size
+    
+                // Update the amplifier value in your tracking object
+                this.amplifiers[articleTitle] = amplifierValue;
+    
+                console.log(`Square for ${articleTitle} dropped on grid. Amplifier set to ${amplifierValue}.`);
+            }
+        });
+    
+        // Optionally, handle the case where the square is not dropped on the grid
+        if (!droppedOnGrid) {
+            // Logic to reset the square's position or handle invalid drops
+            console.log("Square not dropped on a valid grid cell.");
+        }
+    
+        return droppedOnGrid;
+    }
+    
 }
-}
+
 
