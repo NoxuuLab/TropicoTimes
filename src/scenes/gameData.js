@@ -7,7 +7,7 @@ const gameData = {
             {
               "category": "politics",
               "headlines": [
-                { "title": 'Dictator Sucks 1', "effect": -1 }, 
+                { "title": 'Dictator Sucks 1 jhjh', "effect": -1 }, 
                 { "title": 'Dictator is Neutral 1', "effect": 0 }, 
                 { "title": 'Dictator is Cool 1', "effect": 5 }
               ],
