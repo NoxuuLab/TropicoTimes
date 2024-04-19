@@ -1,4 +1,3 @@
-// Scene1.js
 export default class Scene1 extends Phaser.Scene {
     constructor() {
         super({ key: 'Scene1' });
