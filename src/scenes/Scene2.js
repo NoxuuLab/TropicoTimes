@@ -30,6 +30,10 @@ export default class Scene2 extends Phaser.Scene {
 
         let graphics = this.add.graphics({ lineStyle: { color: 0xfff, width: 2 } });
 
+        // In your create method
+        this.gridOffsetX = offsetX;
+        this.gridOffsetY = offsetY;
+
         // Create grid cells
         for (let y = 0; y < this.gridRows; y++) {
             for (let x = 0; x < this.gridColumns; x++) {
@@ -71,38 +75,80 @@ export default class Scene2 extends Phaser.Scene {
         const articleY = 50 * (index + 1);
     
         sizes.forEach((size, i) => {
+            const initialX = squareStartX + i * (size.width + 10);
+            const initialY = articleY;
+
             const square = this.add.rectangle(
-                squareStartX + i * (size.width + 10), articleY,
+                initialX, initialY,
                 size.width, size.height,
                 0x666666
-            ).setOrigin(0.5).setInteractive().setData('amplification', size.amplification);
+            ).setOrigin(0, 0)
+            .setInteractive()
+            .setData('amplification', size.amplification)
+            .setData('initialX', initialX)  
+            .setData('initialY', initialY)  
+            .setData('initialWidth', size.width)  
+            .setData('initialHeight', size.height);  
+            
     
             this.input.setDraggable(square);
+    
+            square.on('pointerdown', function () {
+                if (this.width === 30 && this.height === 30) {
+                    this.setData('newSize', { width: 240, height: 240 });
+                } else if (this.width === 20 && this.height === 20) {
+                    this.setData('newSize', { width: 160, height: 160 });
+                } else if (this.width === 10 && this.height === 20) {
+                    this.setData('newSize', { width: 80, height: 160 });
+                }
+                this.setSize(this.data.get('newSize').width, this.data.get('newSize').height);
+            });
     
             square.on('drag', (pointer, dragX, dragY) => {
                 square.x = dragX;
                 square.y = dragY;
             });
     
-            square.on('dragend', (pointer) => {
+            square.on('dragend', pointer => {
+                // Now 'this' refers to the Scene2 instance
+                const snappedPosition = this.getSnappedPosition(square);
                 if (this.checkIfSquareDroppedOnGrid(square)) {
-                    this.amplifiers[title] = square.getData('amplification');  // Use title as key
+                    // Snap square position
+                    square.setPosition(snappedPosition.x, snappedPosition.y);
+                    this.amplifiers[title] = square.getData('amplification');
                     console.log(`Amplification for article "${title}": ${this.amplifiers[title]}`);
                 } else {
-                    delete this.amplifiers[title];  // Remove the amplification value if not on grid
+                    square.setPosition(square.getData('initialX'), square.getData('initialY'));
+                    square.setSize(square.getData('initialWidth'), square.getData('initialHeight'));
+                    delete this.amplifiers[title];
                     console.log(`Amplification for article "${title}" removed because it's off the grid.`);
-                    square.x = squareStartX + i * (size.width + 10);  // Reset position
-                    square.y = articleY;
                 }
             });
+            
         });
     }
     
 
     checkIfSquareDroppedOnGrid(square) {
-        let isDropped = this.grid.some(cell => Phaser.Geom.Rectangle.Overlaps(cell, square.getBounds()));
-        return isDropped;
+        const bounds = square.getBounds();
+        const insideHorizontalBounds = bounds.right <= this.gridOffsetX + this.cellWidth * this.gridColumns;
+        const insideVerticalBounds = bounds.bottom <= this.gridOffsetY + this.cellHeight * this.gridRows;
+        return insideHorizontalBounds && insideVerticalBounds && this.grid.some(cell => Phaser.Geom.Rectangle.Overlaps(cell, bounds));
     }
+
+    getSnappedPosition(square) {
+        // Calculate the snapped position based on the square's top-left corner (since its origin is 0,0)
+        let snappedX = Phaser.Math.Snap.To(square.x - this.gridOffsetX, this.cellWidth) + this.gridOffsetX;
+        let snappedY = Phaser.Math.Snap.To(square.y - this.gridOffsetY, this.cellHeight) + this.gridOffsetY;
+    
+        // Make sure we're not snapping outside the grid's bounds
+        snappedX = Math.min(snappedX, this.gridOffsetX + this.cellWidth * (this.gridColumns - 1));
+        snappedY = Math.min(snappedY, this.gridOffsetY + this.cellHeight * (this.gridRows - 1));
+    
+        return { x: snappedX, y: snappedY };
+    }
+    
+    
 
     addPublishButton() {
         const publishButton = this.add.text(600, 500, 'Publish', { fontSize: '32px', fill: '#fff' })
