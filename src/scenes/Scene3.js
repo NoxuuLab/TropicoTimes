@@ -1,4 +1,5 @@
 // Scene3.js
+import textStyle from '/src/styles/textStyles.js';
 import { goToNextDay, openPopup, adjustApprovalTrends } from './gameCycle.js';
 
 
@@ -13,50 +14,45 @@ export default class Scene3 extends Phaser.Scene {
   }
 
   create() {
-
+    this.cameras.main.setBackgroundColor('#ffffff'); 
 
     const sumAmplifiedPost = this.gameData.gameState.selected.reduce((sum, item) => sum + (item.amplifiedPost || 0), 0);
-    
+
     // Call adjustApprovalTrends and get the last and new ratings
     const {
         lastPresidenteRating, newPresidenteRating,
         lastRivieraRating, newRivieraRating
     } = adjustApprovalTrends(this.gameData, sumAmplifiedPost);
 
-    // Log the last and new ratings
-    console.log(`Last Presidente Rating: ${lastPresidenteRating}, New Presidente Rating: ${newPresidenteRating}`);
-    console.log(`Last Riviera Rating: ${lastRivieraRating}, New Riviera Rating: ${newRivieraRating}`);
-
-
     const rivieraDataPoints = this.gameData.gameState.approvalTrends.riviera.map((value, index) => ({ x: index, y: value }));
     const presidenteDataPoints = this.gameData.gameState.approvalTrends.presidente.map((value, index) => ({ x: index, y: value }));
-  
 
-    console.log('rivera',rivieraDataPoints);
-    console.log('el presidente',presidenteDataPoints);
+    // Preparing the game container
+    const gameWidth = this.sys.game.config.width; // Get the width of the game from Phaser's configuration
+    const canvasWidth = 500; // Set your desired canvas width
 
-
-    const gameContainer = document.getElementById('game-container');
-    const rect = gameContainer.getBoundingClientRect(); // Get the position and size of the game container
+    // Create and setup canvas
     const canvas = document.createElement('canvas');
-
-
     const context = canvas.getContext('2d');
-      if (!context) {
-    console.error('Failed to get canvas context');
+    if (!context) {
+        console.error('Failed to get canvas context');
+        return;
     }
-    canvas.style.position = 'absolute';
+
     // Set the drawing dimensions for the canvas
-    canvas.width = 500; // drawing units
-    canvas.height = 300; // drawing units
+    canvas.width = canvasWidth;
+    canvas.height = 400; // Set your desired canvas height
+
     // Set the CSS styles for the canvas
-    canvas.style.width = '500px !important';
-    canvas.style.height = '300px !important';
+    canvas.style.width = `${canvasWidth}px`;
+    canvas.style.height = '400px';
     canvas.style.position = 'absolute';
-    canvas.style.left = `${rect.left}px`; 
-    canvas.style.top = `${rect.top}px`; 
-    canvas.style.zIndex = '10'; 
-  
+    canvas.style.left = `${(gameWidth - canvasWidth) / 2}px`; // Center horizontally
+    canvas.style.top = '50px'; // Set an arbitrary vertical position, adjust as needed
+    canvas.style.zIndex = '10';
+
+    // Append canvas to your game container, assumed to be directly under the body or main game div
+    const gameContainer = document.getElementById('game-container');
     gameContainer.appendChild(canvas);
 
       const totalDuration = 1000;
@@ -99,42 +95,80 @@ export default class Scene3 extends Phaser.Scene {
         data: {
           datasets: [{
             label: 'Riviera',
-            borderColor: 'red',
-            borderWidth: 1,
-            radius: 0,
+            borderColor: 'rgb(255, 99, 132)', // bright red
+            borderWidth: 2,
+            borderDash: [5, 5], // dashed line
+            pointStyle: 'circle',
+            pointRadius: 5,
+            pointBackgroundColor: 'rgb(255, 99, 132)', // matching point color
             data: rivieraDataPoints,
-          },
-          {
+          }, {
             label: 'El Presidente',
-            borderColor: 'blue',
-            borderWidth: 1,
-            radius: 0,
+            borderColor: 'rgb(54, 162, 235)', // bright blue
+            borderWidth: 2,
+            pointStyle: 'rect',
+            pointRadius: 5,
+            pointBackgroundColor: 'rgb(54, 162, 235)', // matching point color
             data: presidenteDataPoints,
           }]
         },
         options: {
           animation: animation,
-          responsive: false, 
+          responsive: false,
           scales: {
             x: {
-              type: 'linear', 
-              min: 0,         
-              max: 25,        
+              type: 'linear',
+              min: 0,
+              max: 25,
               title: {
                 display: true,
-                text: 'Day'
+                text: 'Day',
+                font: {
+                  family: 'Roboto Mono', // Custom font
+                  size: 16,
+                  
+                },
+                color: '#333',
               }
             },
             y: {
-              min: 0,         
-              max: 100,       
+              min: 0,
+              max: 100,
               title: {
                 display: true,
-                text: 'Approval Rating (%)'
+                text: 'Approval Rating (%)',
+                font: {
+                  family: 'Roboto Mono',
+                  size: 16,
+                 
+                },
+                color: '#333',
               }
             }
           },
-          
+          plugins: {
+            legend: {
+              labels: {
+                font: {
+                  family: 'Roboto Mono',
+                  size: 14,
+                },
+                color: '#333'
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `${context.dataset.label}: ${context.parsed.y}% on day ${context.parsed.x}`;
+                }
+              },
+              backgroundColor: '#FFF',
+              titleColor: '#333',
+              bodyColor: '#333',
+              borderColor: '#CCC',
+              borderWidth: 1,
+            }
+          }
         }
       };
       
@@ -149,7 +183,7 @@ export default class Scene3 extends Phaser.Scene {
 
 
     // Add a "Popup" button to the scene
-    let popupButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 150, 'Popup', { fontSize: '32px', fill: '#f00' })
+    let popupButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 220, 'Popup', { fontSize: '32px', fill: '#f00' })
     .setOrigin(0.5)
     .setInteractive();
 
@@ -175,13 +209,13 @@ export default class Scene3 extends Phaser.Scene {
 
 
 
-    let nextDayButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 100, 'Next Day', { fontSize: '32px', fill: '#0f0' })
+    let nextDayButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 180, 'Next Day', { fontSize: '32px', fill: '#f00' })
       .setOrigin(0.5)
       .setInteractive();
 
       nextDayButton.on('pointerdown', () => {
-        console.log('Current Day:', this.gameData.gameState.currentDay); // This line is fine.
-        console.log('Max Day:', this.gameData.gameState.maxDay); // Use `this.gameData` instead of `gameData`.
+        console.log('Current Day:', this.gameData.gameState.currentDay); 
+        console.log('Max Day:', this.gameData.gameState.maxDay); 
         if (this.gameData.gameState.currentDay < this.gameData.gameState.maxDay) {
             // If it's not the last day, go to the next day (Scene1)
             goToNextDay(this.gameData);
@@ -199,4 +233,3 @@ export default class Scene3 extends Phaser.Scene {
     });
 }
   }
-
