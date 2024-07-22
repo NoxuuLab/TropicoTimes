@@ -1,20 +1,49 @@
 // BootScene.js
+// BootScene.js
 import gameData from './gameData.js';
-import { initializeGameState} from './gameCycle.js'; // Make sure to import the function
+import { initializeGameState } from './gameCycle.js';
 
 export default class BootScene extends Phaser.Scene {
-  constructor() {
-    super({ key: 'BootScene' });
-  }
+    constructor() {
+        super({ key: 'BootScene' });
+    }
 
-  create() {
-    // Initialize the game state before starting the game
-    initializeGameState(gameData);
-   
-    // Now gameData.gameState should have maxDay set to the length of the days array
-    console.log('Starting Scene1 with gameData:', gameData); // This should show the structure of gameData with maxDay set
+    preload() {
+        // First, load the WebFont script
+        this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
+    }
 
-    // Start the first scene (Scene1) and pass the initial gameData
-    this.scene.start('Scene1', { gameData: gameData });
-  }
+    create() {
+        // Once the script is loaded, initialize WebFont Loader
+        WebFont.load({
+            google: {
+                families: ['Roboto Mono', 'PT Mono']
+            },
+            active: () => {
+                this.fontsLoaded();
+            }
+        });
+    }
+
+    fontsLoaded() {
+        // Log that fonts are loaded
+        console.log("Fonts Loaded");
+
+        // Continue to load other assets
+        this.load.image('logo', 'src/assets/TROPICO-times.png');
+        // Add other assets here like audio, other images, etc.
+
+        // Listener for when all assets are loaded
+        this.load.on('complete', () => {
+            // Initialize game state
+            initializeGameState(gameData);
+            console.log('Starting Scene1 with gameData:', gameData);
+
+            // Now that everything is loaded, start Scene1
+            this.scene.start('Scene1', { gameData: gameData });
+        });
+
+        // Start the actual asset loading process
+        this.load.start();
+    }
 }

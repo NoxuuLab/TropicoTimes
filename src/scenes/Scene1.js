@@ -1,3 +1,4 @@
+import textStyle from '/src/styles/textStyles.js';
 export default class Scene1 extends Phaser.Scene {
     constructor() {
         super({ key: 'Scene1' });
@@ -6,18 +7,13 @@ export default class Scene1 extends Phaser.Scene {
     }
 
     init(data) {
-        // Use the gameData passed from the previous scene
         console.log('Received data in Scene1:', data); // Add this line to debug
         this.gameData = data.gameData;
         this.currentDay = this.gameData.gameState.currentDay;
-        
-        console.log('Current Day:', this.currentDay)
-        
-        // Initialize selectedData with the default values
+        console.log('Current Day:', this.currentDay);
         this.fill();
     }
 
-    // fill() method to initialize selectedData
     fill() {
         const currentDayData = this.gameData.gameData.days[this.currentDay - 1];
         this.selectedData = currentDayData.articles.map((article, articleIndex) => {
@@ -33,45 +29,38 @@ export default class Scene1 extends Phaser.Scene {
     }
 
     create() {
-        // Create buttons for each article and display their first titles
-        this.selectedData.forEach((data, articleIndex) => {
-            const currentTitles = this.gameData.gameData.days[this.currentDay - 1].articles[articleIndex].headlines;
-
-            const button = this.add.text(400, 50 * (articleIndex + 1), data.headline.title, { fontSize: '18px', fill: '#fff' })
-                .setOrigin(0.5)
+        this.cameras.main.setBackgroundColor('#ffffff');
+        const articles = this.gameData.gameData.days[this.currentDay - 1].articles;
+    
+        const logo = this.add.image(this.cameras.main.centerX, 50, 'logo').setOrigin(0.5, 0);
+        this.selectedData.forEach((data, index) => {
+            const yPosition = 150 + 60 * (index + 1);
+            const button = this.add.text(40, yPosition, data.headline.title, textStyle.mainText)
+                .setOrigin(0, 0)
                 .setInteractive();
-
-            // Add button click event
-            button.on('pointerdown', () => {
-                // Update the title index for the clicked article
-                this.currentTitleIndex = (this.currentTitleIndex + 1) % currentTitles.length;
-
-                // Update the button text with the rotated title
-                button.setText(currentTitles[this.currentTitleIndex].title);
-
-                // Update selectedData with the clicked title for the corresponding article
-                this.selectedData[articleIndex].headline.title = currentTitles[this.currentTitleIndex].title;
-                this.selectedData[articleIndex].headline.effect = currentTitles[this.currentTitleIndex].effect;
-
-                // Log the selected data
-                console.log('showData', this.selectedData);
-            });
+    
+            button.on('pointerdown', () => this.rotateTitle(button, index, articles));
         });
-
-        // Add a "Publish" button to the scene
-        const publishButton = this.add.text(600, 550, 'Publish', { fontSize: '32px', fill: '#fff' })
-            .setOrigin(0.5)
-            .setInteractive();
-
-        publishButton.on('pointerdown', () => {
-            // Update gameData with the selected data
-            this.gameData.gameState.selected = this.selectedData;
-
-            // Log the updated gameData
-            console.log('Updated gameData:', this.gameData);
-
-            // Move to Scene2 and pass data using init
-            this.scene.start('Scene2', { gameData: this.gameData });
-        });
+    
+        this.addPublishButton();
     }
-}
+    
+    rotateTitle(button, index, articles) {
+        const titles = articles[index].headlines;
+        this.currentTitleIndex = (this.currentTitleIndex + 1) % titles.length;
+        button.setText(titles[this.currentTitleIndex].title);
+        this.selectedData[index].headline = titles[this.currentTitleIndex];
+        console.log('showData', this.selectedData);
+    }
+    
+    addPublishButton() {
+        const publishButton = this.add.text(600, 550, 'Publish', textStyle.publishButton)
+            .setOrigin(0.5)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.gameData.gameState.selected = this.selectedData;
+                console.log('Updated gameData:', this.gameData);
+                this.scene.start('Scene2', { gameData: this.gameData });
+            });
+    }
+}    

@@ -1,3 +1,4 @@
+import textStyle from '/src/styles/textStyles.js';
 export default class Scene2 extends Phaser.Scene {
     constructor() {
         super({ key: 'Scene2' });
@@ -14,12 +15,12 @@ export default class Scene2 extends Phaser.Scene {
     }
 
     create() {
+        this.cameras.main.setBackgroundColor('#ffffff');
         console.log('Scene 2 created!');
-        const textStyle = { fontSize: '18px', fill: '#fff' };
 
         this.cellWidth = 80;
         this.cellHeight = 80;
-        this.gridRows = 6; // Set the number of rows
+        this.gridRows = 5; // Set the number of rows
         this.gridColumns = 4; // Set the number of columns
         this.grid = [];
         // Calculate grid start position
@@ -28,7 +29,7 @@ export default class Scene2 extends Phaser.Scene {
         let offsetX = this.cameras.main.width - totalGridWidth - rightMargin;
         let offsetY = (this.cameras.main.height - this.gridRows * this.cellHeight) / 2;
 
-        let graphics = this.add.graphics({ lineStyle: { color: 0xfff, width: 2 } });
+        let graphics = this.add.graphics({ lineStyle: { color: 0xcccccc, width: 2 } });
 
         // In your create method
         this.gridOffsetX = offsetX;
@@ -52,10 +53,12 @@ export default class Scene2 extends Phaser.Scene {
             const title = articleData.headline.title;
             const effect = articleData.headline.effect;
             console.log(`Article ${index + 1}: Title - ${title}, Effect - ${effect}`);
+        // Create a local copy of the textStyle for mainText and modify it
+        let localTextStyle = { ...textStyle.mainText, wordWrap: { width: 300, useAdvancedWrap: true } };
 
-            // Display article titles on the screen
-            this.add.text(100, 50 * (index + 1), title, textStyle);
-
+        // Display article titles using the modified local textStyle
+        this.add.text(40, 100 * (index + 1), title, localTextStyle);
+        
             // Add draggable amplification squares next to each title
             this.addAmplificationSquares(title, effect, index);
         });
@@ -63,87 +66,143 @@ export default class Scene2 extends Phaser.Scene {
         // Add a "Publish" button to the scene
         this.addPublishButton();
     }
-
+    
     addAmplificationSquares(title, effect, index) {
         const sizes = [
             { width: 10, height: 20, amplification: 1 },
             { width: 20, height: 20, amplification: 2 },
             { width: 30, height: 30, amplification: 3 }
         ];
-        
-        const squareStartX = 300; // x-coordinate for the first square of each article
-        const articleY = 50 * (index + 1);
+    
+        const squareStartX = 350; // x-coordinate for the first square of each article
+        const articleY = 100 * (index + 1);
+        const currentArticleSquares = []; // Store squares for this article
     
         sizes.forEach((size, i) => {
-            const initialX = squareStartX + i * (size.width + 10);
+            const initialX = squareStartX + i * (size.width + 3);
             const initialY = articleY;
-
+    
+            // Create graphics for lines within squares
+            let graphics = this.add.graphics({ x: initialX, y: initialY });
+            graphics.fillStyle(0xffffff, 1); // white background color
+            graphics.fillRect(0, 0, size.width, size.height); // drawing the rectangle
+    
+            // Drawing horizontal gray lines to simulate text
+            graphics.lineStyle(1, 0xcccccc, 1); // light gray color and full opacity for lines
+            for (let lineY = 4; lineY < size.height; lineY += 4) { // line spacing
+                graphics.moveTo(0, lineY);
+                graphics.lineTo(size.width, lineY);
+            }
+            graphics.strokePath();
+    
+            // Create the interactive rectangle
             const square = this.add.rectangle(
                 initialX, initialY,
                 size.width, size.height,
-                0x666666
+                0xcccccc, 0 
             ).setOrigin(0, 0)
-            .setInteractive()
-            .setData('amplification', size.amplification)
-            .setData('initialX', initialX)  
-            .setData('initialY', initialY)  
-            .setData('initialWidth', size.width)  
-            .setData('initialHeight', size.height);  
-            
+              .setInteractive()
+              .setStrokeStyle(2, 0xcccccc) // adding a light gray border for better visual clarity
+              .setData('amplification', size.amplification)
+              .setData('initialX', initialX)
+              .setData('initialY', initialY)
+              .setData('initialWidth', size.width)
+              .setData('initialHeight', size.height)
+              .setData('title', title);
     
+            currentArticleSquares.push(square);
+            this.placedSquares.push(square); // Track all squares
             this.input.setDraggable(square);
-    
-            square.on('pointerdown', function () {
-                if (this.width === 30 && this.height === 30) {
-                    this.setData('newSize', { width: 240, height: 240 });
-                } else if (this.width === 20 && this.height === 20) {
-                    this.setData('newSize', { width: 160, height: 160 });
-                } else if (this.width === 10 && this.height === 20) {
-                    this.setData('newSize', { width: 80, height: 160 });
-                }
-                this.setSize(this.data.get('newSize').width, this.data.get('newSize').height);
-            });
-    
-            square.on('drag', (pointer, dragX, dragY) => {
-                square.x = dragX;
-                square.y = dragY;
-            });
-    
-            square.on('dragend', pointer => {
-                // Now 'this' refers to the Scene2 instance
-                const snappedPosition = this.getSnappedPosition(square);
-                if (this.checkIfSquareDroppedOnGrid(square)) {
-                    // Snap square position
-                    square.setPosition(snappedPosition.x, snappedPosition.y);
-                    this.amplifiers[title] = square.getData('amplification');
-                    console.log(`Amplification for article "${title}": ${this.amplifiers[title]}`);
-                } else {
-                    square.setPosition(square.getData('initialX'), square.getData('initialY'));
-                    square.setSize(square.getData('initialWidth'), square.getData('initialHeight'));
+        // Set the color and size when a square is picked up
+        square.on('pointerdown', () => {
+            if (!square.getData('isPlaced')) {
+                const newSize = square.getData('initialWidth') === 30 ? { width: 240, height: 240 } :
+                                square.getData('initialWidth') === 20 ? { width: 160, height: 160 } :
+                                                                        { width: 80, height: 160 };
+                square.setData('newSize', newSize);
+                square.setSize(newSize.width, newSize.height);
+            }
+            currentArticleSquares.forEach(sq => {
+                if (sq !== square && sq.getData('isPlaced')) {
+                    sq.setSize(sq.getData('initialWidth'), sq.getData('initialHeight'));
+                    sq.setPosition(sq.getData('initialX'), sq.getData('initialY'));
+                    sq.setData('isPlaced', false);
                     delete this.amplifiers[title];
-                    console.log(`Amplification for article "${title}" removed because it's off the grid.`);
+                    sq.setFillStyle(0x666666); // Reset color
                 }
             });
-            
         });
-    }
-    
 
+        // Update the color in real-time during dragging based on position validity
+        square.on('drag', (pointer, dragX, dragY) => {
+            square.x = dragX;
+            square.y = dragY;
+            let isOverlapping = this.placedSquares.some(other => {
+                return other !== square && Phaser.Geom.Rectangle.Overlaps(other.getBounds(), square.getBounds());
+            });
+            if (isOverlapping || !this.checkIfSquareDroppedOnGrid(square)) {
+                square.setFillStyle(0xff0000); // Red if overlapping or out of bounds
+            } else {
+                square.setFillStyle(0x666666); // Revert to normal color
+            }
+        });
+
+        // Handle the drop event to either reset or confirm the square's position
+        square.on('dragend', pointer => {
+            const isOverlapping = this.placedSquares.some(other => {
+                return other !== square && Phaser.Geom.Rectangle.Overlaps(other.getBounds(), square.getBounds());
+            });
+            const isOutOfBounds = !this.checkIfSquareDroppedOnGrid(square);
+
+            if (isOverlapping || isOutOfBounds) {
+                // Reset position and size if overlap or out of bounds
+                square.setPosition(square.getData('initialX'), square.getData('initialY'));
+                square.setSize(square.getData('initialWidth'), square.getData('initialHeight'));
+                square.setFillStyle(0x666666); // Reset color
+                square.setData('isPlaced', false);
+                delete this.amplifiers[title];
+            } else {
+                // Snap to grid if valid and mark as placed
+                const snappedPosition = this.getSnappedPosition(square);
+                square.setPosition(snappedPosition.x, snappedPosition.y);
+                square.setData('isPlaced', true);
+                if (!square.getData('newSize')) {
+                    // Maintain current size if newSize isn't set
+                    square.setSize(square.width, square.height);
+                } else {
+                    // Use the newSize data to set the size of the square
+                    const newSize = square.getData('newSize');
+                    square.setSize(newSize.width, newSize.height);
+                }
+                this.amplifiers[title] = square.getData('amplification'); // Set amplifier
+            }
+        });
+    });
+}
+
+    
+    
+    
     checkIfSquareDroppedOnGrid(square) {
         const bounds = square.getBounds();
-        const insideHorizontalBounds = bounds.right <= this.gridOffsetX + this.cellWidth * this.gridColumns;
-        const insideVerticalBounds = bounds.bottom <= this.gridOffsetY + this.cellHeight * this.gridRows;
-        return insideHorizontalBounds && insideVerticalBounds && this.grid.some(cell => Phaser.Geom.Rectangle.Overlaps(cell, bounds));
+        return bounds.x >= this.gridOffsetX &&
+               bounds.y >= this.gridOffsetY &&
+               bounds.right <= this.gridOffsetX + this.cellWidth * this.gridColumns &&
+               bounds.bottom <= this.gridOffsetY + this.cellHeight * this.gridRows;
     }
-
+    
     getSnappedPosition(square) {
-        // Calculate the snapped position based on the square's top-left corner (since its origin is 0,0)
+        // Calculate the snapped position based on the square's top-left corner
         let snappedX = Phaser.Math.Snap.To(square.x - this.gridOffsetX, this.cellWidth) + this.gridOffsetX;
         let snappedY = Phaser.Math.Snap.To(square.y - this.gridOffsetY, this.cellHeight) + this.gridOffsetY;
     
-        // Make sure we're not snapping outside the grid's bounds
-        snappedX = Math.min(snappedX, this.gridOffsetX + this.cellWidth * (this.gridColumns - 1));
-        snappedY = Math.min(snappedY, this.gridOffsetY + this.cellHeight * (this.gridRows - 1));
+        // Ensure the snapped position does not exceed the grid boundaries
+        snappedX = Phaser.Math.Clamp(snappedX, this.gridOffsetX, this.gridOffsetX + this.cellWidth * (this.gridColumns - 1));
+        snappedY = Phaser.Math.Clamp(snappedY, this.gridOffsetY, this.gridOffsetY + this.cellHeight * (this.gridRows - 1));
+    
+        // Adjust for the origin being at the top-left corner of the square
+        snappedX = Math.max(snappedX, this.gridOffsetX);
+        snappedY = Math.max(snappedY, this.gridOffsetY);
     
         return { x: snappedX, y: snappedY };
     }
@@ -151,7 +210,7 @@ export default class Scene2 extends Phaser.Scene {
     
 
     addPublishButton() {
-        const publishButton = this.add.text(600, 500, 'Publish', { fontSize: '32px', fill: '#fff' })
+        const publishButton = this.add.text(700, 550, 'Publish', textStyle.publishButton)
             .setOrigin(0.5)
             .setInteractive();
 
