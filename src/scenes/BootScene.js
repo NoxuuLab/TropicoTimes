@@ -1,5 +1,4 @@
 // BootScene.js
-// BootScene.js
 import gameData from './gameData.js';
 import { initializeGameState } from './gameCycle.js';
 
@@ -9,12 +8,16 @@ export default class BootScene extends Phaser.Scene {
     }
 
     preload() {
-        // First, load the WebFont script
+        // Load the WebFont script
         this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
+        
+        // Load assets for the IntroScene
+        this.load.image('startButton', 'src/assets/startButton.png'); // Assuming the button image is named startButton.png
+        this.load.audio('introMusic', 'src/assets/introMusic.mp3'); // Load the music for the intro scene
     }
 
     create() {
-        // Once the script is loaded, initialize WebFont Loader
+        // Initialize WebFont Loader
         WebFont.load({
             google: {
                 families: ['Roboto Mono', 'PT Mono']
@@ -26,24 +29,25 @@ export default class BootScene extends Phaser.Scene {
     }
 
     fontsLoaded() {
-        // Log that fonts are loaded
         console.log("Fonts Loaded");
 
-        // Continue to load other assets
+        // Load other assets
         this.load.image('logo', 'src/assets/TROPICO-times.png');
         // Add other assets here like audio, other images, etc.
 
-        // Listener for when all assets are loaded
         this.load.on('complete', () => {
             // Initialize game state
             initializeGameState(gameData);
-            console.log('Starting Scene1 with gameData:', gameData);
+            console.log('Game data initialized:', gameData);
 
-            // Now that everything is loaded, start Scene1
-            this.scene.start('Scene1', { gameData: gameData });
+            // Now that everything is loaded, start the IntroScene
+        
+            console.log('Starting IntroScene with gameData:', gameData);
+            this.scene.start('IntroScene', { gameData: gameData });
+
         });
 
-        // Start the actual asset loading process
+        // Start loading the assets
         this.load.start();
     }
 }

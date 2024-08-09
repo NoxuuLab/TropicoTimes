@@ -7,10 +7,10 @@ export default class Scene1 extends Phaser.Scene {
     }
 
     init(data) {
-        console.log('Received data in Scene1:', data); // Add this line to debug
+        console.log('Received data in Scene1:', data); // Debugging line
         this.gameData = data.gameData;
         this.currentDay = this.gameData.gameState.currentDay;
-        console.log('Current Day:', this.currentDay);
+        console.log('Current Day in Scene1:', this.currentDay);
         this.fill();
     }
 
