@@ -13,10 +13,21 @@ export default class Scene2 extends Phaser.Scene {
         this.amplifiers = {}; // Maps article title to its amplifier value
         this.placedSquares = [];
     }
+    preload() {
+        // Load assets
+        this.load.audio('buttonClick', 'src/assets/buttonClick.mp3'); // Load the button click sound
+        this.load.audio('dragSound', 'src/assets/dragSound.mp3'); // Load the dragging sound
+        this.load.audio('snapSound', 'src/assets/snapSound.mp3');// Load the snapping sound
+    }
 
     create() {
         this.cameras.main.setBackgroundColor('#ffffff');
         console.log('Scene 2 created!');
+       
+        // Create sound objects
+        this.buttonClickSound = this.sound.add('buttonClick');
+        this.dragSound = this.sound.add('dragSound');
+        this.snapSound = this.sound.add('snapSound');
 
         this.cellWidth = 80;
         this.cellHeight = 80;
@@ -148,6 +159,11 @@ export default class Scene2 extends Phaser.Scene {
         });
 
         // Handle the drop event to either reset or confirm the square's position
+
+        square.on('dragstart', () => {
+            this.dragSound.play(); // Play dragging sound when drag starts
+        });
+        
         square.on('dragend', pointer => {
             const isOverlapping = this.placedSquares.some(other => {
                 return other !== square && Phaser.Geom.Rectangle.Overlaps(other.getBounds(), square.getBounds());
@@ -161,6 +177,7 @@ export default class Scene2 extends Phaser.Scene {
                 square.setFillStyle(0x666666); // Reset color
                 square.setData('isPlaced', false);
                 delete this.amplifiers[title];
+                this.snapSound.play();
             } else {
                 // Snap to grid if valid and mark as placed
                 const snappedPosition = this.getSnappedPosition(square);
@@ -175,6 +192,7 @@ export default class Scene2 extends Phaser.Scene {
                     square.setSize(newSize.width, newSize.height);
                 }
                 this.amplifiers[title] = square.getData('amplification'); // Set amplifier
+                this.snapSound.play();
             }
         });
     });
@@ -215,6 +233,7 @@ export default class Scene2 extends Phaser.Scene {
             .setInteractive();
 
         publishButton.on('pointerdown', () => {
+            this.buttonClickSound.play();
             this.publishData();
         });
     }

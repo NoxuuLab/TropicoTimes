@@ -13,6 +13,10 @@ export default class Scene1 extends Phaser.Scene {
         console.log('Current Day in Scene1:', this.currentDay);
         this.fill();
     }
+    preload() {
+        // Load assets
+        this.load.audio('buttonClick', 'src/assets/buttonClick.mp3'); // Load the button click sound
+      }
 
     fill() {
         const currentDayData = this.gameData.gameData.days[this.currentDay - 1];
@@ -31,6 +35,8 @@ export default class Scene1 extends Phaser.Scene {
     create() {
         this.cameras.main.setBackgroundColor('#ffffff');
         const articles = this.gameData.gameData.days[this.currentDay - 1].articles;
+        // Load the button click sound
+       this.buttonClickSound = this.sound.add('buttonClick');
     
         const logo = this.add.image(this.cameras.main.centerX, 50, 'logo').setOrigin(0.5, 0);
         this.selectedData.forEach((data, index) => {
@@ -58,6 +64,7 @@ export default class Scene1 extends Phaser.Scene {
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
+                this.buttonClickSound.play();
                 this.gameData.gameState.selected = this.selectedData;
                 console.log('Updated gameData:', this.gameData);
                 this.scene.start('Scene2', { gameData: this.gameData });

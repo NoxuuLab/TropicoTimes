@@ -11,8 +11,15 @@ export default class Scene3 extends Phaser.Scene {
         this.gameData = data.gameData;
     }
 
+    preload() {
+        // Load assets
+        this.load.audio('buttonClick', 'src/assets/buttonClick.mp3'); // Load the button click sound
+   
+    }
+
     create() {
         this.cameras.main.setBackgroundColor('#ffffff');
+        this.buttonClickSound = this.sound.add('buttonClick');
 
         const sumAmplifiedPost = this.gameData.gameState.selected.reduce((sum, item) => sum + (item.amplifiedPost || 0), 0);
         const { lastPresidenteRating, newPresidenteRating, lastRivieraRating, newRivieraRating } = adjustApprovalTrends(this.gameData, sumAmplifiedPost);
@@ -164,6 +171,7 @@ export default class Scene3 extends Phaser.Scene {
             .setInteractive();
 
         popupButton.on('pointerdown', () => {
+            this.buttonClickSound.play();
             const currentDayIndex = this.gameData.gameState.currentDay - 1;
             const messages = this.gameData.gameData.days[currentDayIndex].messages;
 
@@ -211,14 +219,18 @@ export default class Scene3 extends Phaser.Scene {
             .setInteractive()
             .setVisible(false); // Initially hidden
 
-        nextDayButton.on('pointerdown', () => {
-            if (this.gameData.gameState.currentDay < this.gameData.gameState.maxDay) {
-                goToNextDay(this.gameData);
-                this.scene.start('Scene1', { gameData: this.gameData });
-            } else {
-                this.scene.start('FinishScene');
-            }
-        });
+            nextDayButton.on('pointerdown', () => {
+                this.sound.context.resume().then(() => {
+                    this.buttonClickSound.play(); // Play the sound after context is resumed
+                    if (this.gameData.gameState.currentDay < this.gameData.gameState.maxDay) {
+                        goToNextDay(this.gameData);
+                        this.scene.start('Scene1', { gameData: this.gameData });
+                    } else {
+                        this.scene.start('FinishScene');
+                    }
+                });
+            });
+            
 
         this.events.on('shutdown', () => {
             if (canvas && canvas.parentNode) {

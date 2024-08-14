@@ -7,6 +7,13 @@ export default class IntroScene extends Phaser.Scene {
       this.gameData = data.gameData; // Receive gameData from BootScene
   }
 
+  // BootScene.js
+preload() {
+  // Load other assets like fonts, images, etc.
+  this.load.audio('buttonClick', 'src/assets/buttonClick.mp3'); // Load the button click sound
+}
+
+
   create() {
       // Play background music
       this.introMusic = this.sound.add('introMusic', {
@@ -17,6 +24,10 @@ export default class IntroScene extends Phaser.Scene {
       this.sound.context.resume().then(() => {
           this.introMusic.play();
       });
+
+       // Load the button click sound
+       this.buttonClickSound = this.sound.add('buttonClick');
+
 
             // Display the introductory text
             const introText = `
@@ -40,13 +51,6 @@ export default class IntroScene extends Phaser.Scene {
             wordWrap: { width: 600, useAdvancedWrap: true }
         });
 
-      this.add.text(100, 50, introText, {
-          fontFamily: 'Roboto Mono',
-          fontSize: '18px',
-          color: '#ffffff',
-          wordWrap: { width: 600, useAdvancedWrap: true }
-      });
-
       // Create the "Start Work" button using the image
       const startButton = this.add.image(400, 500, 'startButton')
           .setInteractive({ useHandCursor: true })
@@ -55,10 +59,14 @@ export default class IntroScene extends Phaser.Scene {
 
       // Add functionality to the button
       startButton.on('pointerdown', () => {
+        this.buttonClickSound.play();
           this.introMusic.stop(); // Stop the music
           console.log('Passing gameData to Scene1:', this.gameData); // Debug line
           this.scene.start('Scene1', { gameData: this.gameData }); // Pass gameData to Scene1
       });
+
+      
+
 
       startButton.on('pointerover', () => {
           startButton.setTint(0x44ff44);

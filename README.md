@@ -1,4 +1,5 @@
-# Tropico Times
+# Tropico Times 
+
 
 ## Introduction
 
@@ -59,14 +60,3 @@ Special thanks to [Isaac Pante](https://github.com/ipante) for his guidance and 
 
 - **Chart.js**: Utilized for graphing approval ratings and visualizing player impact. Learn more at [Chart.js](https://www.chartjs.org/).
 - **Phaser**: The game framework that powers the core mechanics of **Tropico Times**.
-
-
-
-## Acknowledgments
-
-Special thanks to [Isaac Pante](https://github.com/ipante) for his inspiring teachings which have greatly contributed to the development of this game.
-
-## References
-
-- Chart.js for graphing capabilities: [Chart.js](https://www.chartjs.org/)
-- Phaser
