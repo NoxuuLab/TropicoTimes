@@ -1,7 +1,7 @@
 // textStyle.js in the styles folder
 const textStyle = {
     title: {
-        fontFamily: 'Arial',
+        fontFamily: 'Roboto Mono',
         fontSize: '25px',
         fill: '#333', // Dark gray color for the text
         wordWrap: { width: 700, useAdvancedWrap: true }

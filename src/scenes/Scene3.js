@@ -1,6 +1,6 @@
 // Scene3.js
 import textStyle from '/src/styles/textStyles.js';
-import { goToNextDay, openPopup, adjustApprovalTrends } from './gameCycle.js';
+import { goToNextDay, showPopupWithNextButton, adjustApprovalTrends }  from './gameCycle.js';
 
 export default class Scene3 extends Phaser.Scene {
     constructor() {
@@ -162,7 +162,7 @@ export default class Scene3 extends Phaser.Scene {
         };
 
         new Chart(context, config);
-
+        this.chartCanvas = canvas; // Store the reference to the canvas
         const textStyle = { fontSize: '24px', fill: '#fff' };
         this.add.text(400, 300, `Sum of Amplified Posts: ${sumAmplifiedPost}`, textStyle).setOrigin(0.5);
 
@@ -172,13 +172,15 @@ export default class Scene3 extends Phaser.Scene {
 
         popupButton.on('pointerdown', () => {
             this.buttonClickSound.play();
+            this.cleanupChart();
+
             const currentDayIndex = this.gameData.gameState.currentDay - 1;
             const messages = this.gameData.gameData.days[currentDayIndex].messages;
 
             let category;
             if (sumAmplifiedPost < 5) {
                 category = "badjob";
-            } else if (sumAmplifiedPost < 30) {
+            } else if (sumAmplifiedPost > 0) {
                 category = "neutral";
             } else {
                 category = "excellent";
@@ -188,99 +190,20 @@ export default class Scene3 extends Phaser.Scene {
             const randomMessageIndex = Math.floor(Math.random() * categoryMessages.length);
             const message = categoryMessages[randomMessageIndex].title;
 
-            this.showPopupMessage(message);
-            popupButton.setVisible(false);  // Hide popup button when clicked
+            // Transition to the PopupScene with the message
+            this.scene.start('PopupScene', { message, gameData: this.gameData });
         });
-
-        const popupCanvas = document.createElement('canvas');
-    popupCanvas.width = this.sys.game.config.width;
-    popupCanvas.height = this.sys.game.config.height;
-    popupCanvas.style.width = `${this.sys.game.config.width}px`;
-    popupCanvas.style.height = `${this.sys.game.config.height}px`;
-    popupCanvas.style.position = 'absolute';
-    popupCanvas.style.left = '0';
-    popupCanvas.style.top = '0';
-    popupCanvas.style.zIndex = '10'; // Higher value to ensure it is above other elements
-
-    const popupContext = popupCanvas.getContext('2d');
-    if (!popupContext) {
-        console.error('Failed to get popup canvas context');
-        return;
-    }
-
-  
-    gameContainer.appendChild(popupCanvas);
-
-    this.popupCanvas = popupCanvas;
-    this.popupContext = popupContext;
-
-        let nextDayButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 260, 'Next Day', { fontSize: '32px', fill: '#f00' })
-            .setOrigin(0.5)
-            .setInteractive()
-            .setVisible(false); // Initially hidden
-
-            nextDayButton.on('pointerdown', () => {
-                this.sound.context.resume().then(() => {
-                    this.buttonClickSound.play(); // Play the sound after context is resumed
-                    if (this.gameData.gameState.currentDay < this.gameData.gameState.maxDay) {
-                        goToNextDay(this.gameData);
-                        this.scene.start('Scene1', { gameData: this.gameData });
-                    } else {
-                        this.scene.start('FinishScene');
-                    }
-                });
-            });
-            
 
         this.events.on('shutdown', () => {
-            if (canvas && canvas.parentNode) {
-                canvas.parentNode.removeChild(canvas);
-            }
+            this.cleanupChart();
         });
-
-        // Store references for use in other methods
-        this.popupButton = popupButton;
-        this.nextDayButton = nextDayButton;
     }
 
-    showPopupMessage(message) {
-      const gameWidth = this.sys.game.config.width;
-      const gameHeight = this.sys.game.config.height;
-  
-      const popupContext = this.popupContext;
-  
-      // Clear the canvas
-      popupContext.clearRect(0, 0, gameWidth, gameHeight);
-  
-      // Popup Background
-      popupContext.fillStyle = 'rgba(0, 0, 0, 0.8)';
-      popupContext.fillRect(50, 50, 300, 300);
-  
-      // Popup Text
-      popupContext.fillStyle = '#fff';
-      popupContext.font = '32px Arial';
-      popupContext.fillText(message, 100, 200);
-  
-      // Next Day Button
-      const nextDayButton = this.add.text(gameWidth / 2, gameHeight / 2 + 50, 'Next Day', {
-          fontSize: '24px', fill: '#fff', backgroundColor: '#000',
-          padding: { x: 10, y: 5 }, border: { color: '#fff', width: 2 }
-      }).setOrigin(0.5).setInteractive().setDepth(1001);
-  
-      nextDayButton.on('pointerdown', () => {
-          popupContext.clearRect(0, 0, gameWidth, gameHeight);
-          nextDayButton.destroy();
-  
-          if (this.gameData.gameState.currentDay < this.gameData.gameState.maxDay) {
-              goToNextDay(this.gameData);
-              this.scene.start('Scene1', { gameData: this.gameData });
-          } else {
-              this.scene.start('FinishScene');
-          }
-      });
-  
-      // Hide the main next day button
-      this.nextDayButton.setVisible(false);
-  }
-  
+    cleanupChart() {
+        // This method removes the chart canvas when the scene shuts down
+        if (this.chartCanvas && this.chartCanvas.parentNode) {
+            this.chartCanvas.parentNode.removeChild(this.chartCanvas);
+        }
+    }
 }
+    
