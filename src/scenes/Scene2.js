@@ -18,11 +18,21 @@ export default class Scene2 extends Phaser.Scene {
         this.load.audio('buttonClick', 'src/assets/buttonClick.mp3'); // Load the button click sound
         this.load.audio('dragSound', 'src/assets/dragSound.mp3'); // Load the dragging sound
         this.load.audio('snapSound', 'src/assets/snapSound.mp3');// Load the snapping sound
+        this.load.image('amplifyButton', 'src/assets/amplifyButton.png'); // Load the amplify button image
     }
 
     create() {
         this.cameras.main.setBackgroundColor('#ffffff');
         console.log('Scene 2 created!');
+
+         // Add instructional text
+         this.add.text(this.cameras.main.centerX, 30, "Click on the headlines to explore alternate versions", {
+            fontFamily: 'Roboto Mono',
+            fontSize: '18px', 
+            fill: '#333'  
+        }).setOrigin(0.5, 0);
+
+        this.addAmplifyButton();
        
         // Create sound objects
         this.buttonClickSound = this.sound.add('buttonClick');
@@ -68,7 +78,7 @@ export default class Scene2 extends Phaser.Scene {
         let localTextStyle = { ...textStyle.mainText, wordWrap: { width: 300, useAdvancedWrap: true } };
 
         // Display article titles using the modified local textStyle
-        this.add.text(40, 100 * (index + 1), title, localTextStyle);
+        this.add.text(40, 90 * (index + 1), title, localTextStyle);
         
             // Add draggable amplification squares next to each title
             this.addAmplificationSquares(title, effect, index);
@@ -86,7 +96,7 @@ export default class Scene2 extends Phaser.Scene {
         ];
     
         const squareStartX = 350; // x-coordinate for the first square of each article
-        const articleY = 100 * (index + 1);
+        const articleY = 90 * (index + 1);
         const currentArticleSquares = []; // Store squares for this article
     
         sizes.forEach((size, i) => {
@@ -98,14 +108,7 @@ export default class Scene2 extends Phaser.Scene {
             graphics.fillStyle(0xffffff, 1); // white background color
             graphics.fillRect(0, 0, size.width, size.height); // drawing the rectangle
     
-            // Drawing horizontal gray lines to simulate text
-            graphics.lineStyle(1, 0xcccccc, 1); // light gray color and full opacity for lines
-            for (let lineY = 4; lineY < size.height; lineY += 4) { // line spacing
-                graphics.moveTo(0, lineY);
-                graphics.lineTo(size.width, lineY);
-            }
-            graphics.strokePath();
-    
+          
             // Create the interactive rectangle
             const square = this.add.rectangle(
                 initialX, initialY,
@@ -227,16 +230,32 @@ export default class Scene2 extends Phaser.Scene {
     
     
 
-    addPublishButton() {
-        const publishButton = this.add.text(700, 550, 'Publish', textStyle.publishButton)
-            .setOrigin(0.5)
-            .setInteractive();
+    addAmplifyButton() {
+        // Create the "Amplify & Publish" button using the image
+        const amplifyButton = this.add.image(720, 550, 'amplifyButton')
+            .setInteractive({ useHandCursor: true })
+            .setScale(0.2)  // Scale the button image to desired size
+            .setPosition(720, 520);  // Set the position of the button
 
-        publishButton.on('pointerdown', () => {
+            // Set the button to appear above other elements
+    amplifyButton.setDepth(100); 
+    
+        // Add functionality to the button
+        amplifyButton.on('pointerdown', () => {
             this.buttonClickSound.play();
-            this.publishData();
+            this.publishData();  // Call the existing publishData method
+        });
+    
+        // Add hover effects
+        amplifyButton.on('pointerover', () => {
+            amplifyButton.setTint(0x44ff44);  // Change color on hover
+        });
+    
+        amplifyButton.on('pointerout', () => {
+            amplifyButton.clearTint();  // Revert color when not hovered
         });
     }
+    
 
     publishData() {
         // No need to filter articles now; we will check directly if an amplifier exists for each article
