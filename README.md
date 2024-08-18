@@ -7,13 +7,73 @@
 
 **Instructor**: [Isaac Pante](https://github.com/ipante)  
 **Author**: Marcela Havrilova (<marcela.havrilova@unil.ch>)  
-**Date**: Autumn Semester, 2023
+**Date**: Spring Semester, 2024
 
 ## Gameplay
 
-In **Tropico Times**, players navigate through the complex landscape of media influence, making critical decisions on article selection and amplification to sway public opinion during an election campaign. The game challenges players to strategically manage the news cycle, leveraging their choices to affect the outcome of the political race.
+#### Tropico Times Journal
 
-### Key Mechanics
+**Tropico Times Journal** is a strategic narrative-driven game where you, the player, must use your journalistic skills to help your uncle, Professeur Riviera, win an election against the corrupt and power-hungry El Presidente. The game spans 7 in-game days, during which your decisions will influence public opinion and ultimately determine the outcome of the election.
+
+#### 1. Influencing Module (Scene 1)
+
+**Objective:** Choose and manipulate article titles to sway public opinion in favor of Professeur Riviera.
+
+##### Gameplay Overview:
+- Each day begins with you receiving 7 article titles to work on. These articles cover political, cultural, and sports topics.
+- For each article, you have three title options:
+  - **Pro-Government (Pro-El Presidente)**
+  - **Neutral**
+  - **Pro-Opposition (Pro-Professeur Riviera)**
+- Your task is to carefully select titles that will help shift public opinion toward your uncle. The choices you make will directly influence the approval ratings of both candidates.
+
+##### Actions:
+- **Select Titles:** Click on each article title to choose from the three provided options.
+- **Finalize Choices:** Once all titles are selected, click the "Finish" button to proceed to the next module.
+
+#### 2. Amplification Module (Scene 2)
+
+**Objective:** Amplify the impact of your chosen articles by strategically placing them in the newspaper.
+
+##### Gameplay Overview:
+- After selecting the article titles, it's time to publish them. The effectiveness of each article depends on its placement and size in the newspaper.
+- Articles can be resized and positioned within the newspaper layout. The larger the article, the greater its influence on public opinion.
+
+##### Actions:
+- **Drag and Drop:** Select and drag each article onto the newspaper layout.
+- **Resize Articles:** Adjust the size of each article to amplify its impact.
+- **Finalize Layout:** Once satisfied with the layout, finalize the newspaper to see the results.
+
+#### 3. Election Module (Scene 3)
+
+**Objective:** Review the impact of your decisions and monitor the election progress.
+
+##### Gameplay Overview:
+- This scene displays the current standings of the election through a graph that shows the approval ratings of both candidates based on your previous actions.
+- A pop-up message from "El Presidente's Spy" will humorously comment on your progress, providing feedback on how well (or poorly) you are doing.
+
+##### Actions:
+- **Examine Graph:** Review the graph that shows the shift in approval ratings.
+- **Receive Feedback:** Read the pop-up message delivered by "El Presidente's Spy."
+- **Proceed to Next Day:** Click the "Next Day" button to continue to the next day of the campaign.
+
+#### 4. Final Day and Conclusion (Scene 4)
+
+**Objective:** Determine the final outcome of the election.
+
+##### Gameplay Overview:
+- After 7 days of influencing, amplifying, and reviewing your progress, the final day will reveal the outcome of the election.
+- If Professeur Riviera's approval rating surpasses El Presidente's, Riviera wins the election. Otherwise, the game ends with Riviera's defeat.
+
+##### Actions:
+- **Final Review:** The final scene will display a conclusive message based on the election results.
+- **Restart Game:** After reviewing the results, you can choose to restart the game.
+
+#### Conclusion
+
+Your mission as a journalist in **Tropico Times Journal** is not just to report the news but to shape it in favor of your uncle, Professeur Riviera. Through strategic decisions, keen observation, and a bit of manipulation, you will either guide him to victory or watch as El Presidente tightens his grip on power. Remember, the stakes are high—not just for Riviera, but for you and your family as well.
+
+#### Key Mechanics
 
 - **Article Selection**: Players choose headlines that will appear in the newspaper, each with varying impacts on public opinion.
 - **Article Amplification**: Players decide the prominence of each article, influencing its effectiveness in swaying the public.
