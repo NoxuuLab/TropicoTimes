@@ -82,30 +82,52 @@ Your mission as a journalist in **Tropico Times Journal** is not just to report 
 
 ## Project Organization and Game Mechanics
 
-### Scenes
+### 1. BootScene.js
+- **Purpose:** Initializes the game by loading essential assets (e.g., fonts, images, audio) and setting up the initial game state.
+- **Key Functions:**
+  - `preload()`: Loads all necessary game assets.
+  - `create()`: Starts the game by transitioning to the `IntroScene` after initializing the game data.
 
-- **Boot Scene**:
-  - The game begins by initializing critical game data, including initial voting results and preparing the player for the challenges ahead.
+### 2. Scene1.js (Influence Scene)
+- **Purpose:** Allows the player to choose article titles to influence public opinion in favor of Professeur Riviera.
+- **Key Functions:**
+  - `create()`: Presents the player with article title options and saves their selections.
+  - `updateGameData()`: Updates the game data based on the player's choices.
 
-- **Scene 1 - Influence Scene**:
-  - This scene tasks players with selecting article titles. Each choice directly influences the political landscape and the direction of the campaign.
+### 3. Scene2.js (Amplification Scene)
+- **Purpose:** Enables the player to amplify the selected articles by strategically placing and resizing them in the newspaper.
+- **Key Functions:**
+  - `create()`: Allows drag-and-drop functionality to arrange articles within the newspaper layout.
+  - `finalizeLayout()`: Saves the layout and calculates the amplification effect on public opinion.
 
-- **Scene 2 - Amplification Scene**:
-  - After choosing headlines, players determine the size and prominence of these articles, amplifying their impact on the public.
+### 4. Scene3.js (Election Module)
+- **Purpose:** Displays the impact of the player's decisions using a graph that shows the approval ratings of the candidates.
+- **Key Functions:**
+  - `create()`: Generates the approval rating graph and provides feedback to the player via pop-up messages.
+  - `nextDay()`: Transitions to the next day, continuing the game cycle.
 
-- **Scene 3 - Graph Scene**:
-  - A visual representation of the player's decisions is shown through a graph, leveraging Chart.js to track approval ratings over the course of the campaign.
+### 5. PopupScene.js
+- **Purpose:** Displays pop-up messages with feedback from "El Presidente's Spy," providing humorous and sarcastic commentary on the player's progress.
+- **Key Functions:**
+  - `create()`: Displays the message and includes a button to proceed to the next day or end the game.
 
-- **Finish Scene**:
-  - The game concludes, summarizing the player's impact and offering an option to restart the experience.
+### 6. FinishScene.js
+- **Purpose:** Concludes the game by displaying the final outcome of the election based on the cumulative effects of the player's decisions.
+- **Key Functions:**
+  - `create()`: Displays the final results and offers the option to restart the game.
 
-### Game Data
+### 7. gameData.js
+- **Purpose:** Contains the centralized data structure that stores all game-related data, including article choices, public opinion trends, and other metrics.
+- **Structure:** Organized by days, with each day holding data about available articles, player choices, and resulting public opinion changes.
 
-The game is driven by a comprehensive JavaScript object that maintains the state across all scenes. This data structure includes information on article choices, public opinion trends, and other key game metrics.
+### 8. gameCycle.js
+- **Purpose:** Manages the flow of the game across different days, including initializing game state, managing transitions, and updating public opinion trends.
+- **Key Functions:**
+  - `initializeGameState()`: Sets up the initial state of the game.
+  - `goToNextDay()`: Handles the logic for moving from one day to the next, ensuring data is correctly updated.
 
-### Game Cycle
 
-The game cycle is a collection of functions that manage the flow of the game. It initializes data, manages day-to-day transitions, and calculates trends in public opinion over the 14-day campaign period.
+
 
 ## Limitations
 
