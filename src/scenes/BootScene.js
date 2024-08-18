@@ -1,53 +1,42 @@
-// BootScene.js
 import gameData from './gameData.js';
 import { initializeGameState } from './gameCycle.js';
 
+// Initial scene to load essential assets and initialize game state
 export default class BootScene extends Phaser.Scene {
     constructor() {
-        super({ key: 'BootScene' });
+        super({ key: 'BootScene' }); // Scene identifier
     }
 
     preload() {
-        // Load the WebFont script
+        // Load necessary scripts and assets for the game
         this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
-        
-        // Load assets for the IntroScene
-        this.load.image('startButton', 'src/assets/startButton.png'); // Assuming the button image is named startButton.png
-        this.load.audio('introMusic', 'src/assets/introMusic.mp3'); // Load the music for the intro scene
+        this.load.image('startButton', 'src/assets/startButton.png'); // Start button image
+        this.load.audio('introMusic', 'src/assets/introMusic.mp3'); // Intro scene music
     }
 
     create() {
-        // Initialize WebFont Loader
+        // Load custom fonts and proceed once ready
         WebFont.load({
-            google: {
-                families: ['Roboto Mono', 'PT Mono']
-            },
-            active: () => {
-                this.fontsLoaded();
-            }
+            google: { families: ['Roboto Mono', 'PT Mono'] },
+            active: () => this.fontsLoaded() // Move to next step when fonts are ready
         });
     }
 
     fontsLoaded() {
-        console.log("Fonts Loaded");
+        // Play the intro music and loop it
+        const music = this.sound.add('introMusic', { loop: true, volume: 0.5 });
+        music.play();
 
-        // Load other assets
-        this.load.image('logo', 'src/assets/TROPICO-times.png');
-        // Add other assets here like audio, other images, etc.
+        // Store the music globally so it can continue playing across scenes
+        this.sound.pauseOnBlur = false;  // Ensures music continues if the game loses focus
+        this.game.backgroundMusic = music;
 
+        // Load additional assets and initialize game state
+        this.load.image('logo', 'src/assets/TropicoTimes.png'); // Game logo
         this.load.on('complete', () => {
-            // Initialize game state
-            initializeGameState(gameData);
-            console.log('Game data initialized:', gameData);
-
-            // Now that everything is loaded, start the IntroScene
-        
-            console.log('Starting IntroScene with gameData:', gameData);
-            this.scene.start('IntroScene', { gameData: gameData });
-
+            initializeGameState(gameData); // Set up game data
+            this.scene.start('IntroScene', { gameData: gameData }); // Start intro scene
         });
-
-        // Start loading the assets
-        this.load.start();
+        this.load.start(); // Begin asset loading
     }
 }

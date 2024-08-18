@@ -1,36 +1,42 @@
-// Scene3.js
 import textStyle from '/src/styles/textStyles.js';
-import { goToNextDay, showPopupWithNextButton, adjustApprovalTrends }  from './gameCycle.js';
+import { goToNextDay, showPopupWithNextButton, adjustApprovalTrends } from './gameCycle.js';
 
 export default class Scene3 extends Phaser.Scene {
     constructor() {
-        super({ key: 'Scene3' });
+        super({ key: 'Scene3' }); // Scene identifier
     }
 
     init(data) {
+        // Receive game data from the previous scene
         this.gameData = data.gameData;
     }
 
     preload() {
-        // Load assets
-        this.load.audio('buttonClick', 'src/assets/buttonClick.mp3'); // Load the button click sound
-   
+        // Load necessary assets for this scene
+        this.load.audio('buttonClick', 'src/assets/buttonClick.mp3'); 
+        this.load.image('popupButton', 'src/assets/alea_iacta_est.png');
     }
 
     create() {
-        this.cameras.main.setBackgroundColor('#ffffff');
-        this.buttonClickSound = this.sound.add('buttonClick');
+        this.cameras.main.setBackgroundColor('#ffffff'); // Set background color
+        this.buttonClickSound = this.sound.add('buttonClick'); // Button click sound
 
+        // Calculate the total amplified impact of the articles
         const sumAmplifiedPost = this.gameData.gameState.selected.reduce((sum, item) => sum + (item.amplifiedPost || 0), 0);
+
+        // Adjust the approval trends based on the amplified impact
         const { lastPresidenteRating, newPresidenteRating, lastRivieraRating, newRivieraRating } = adjustApprovalTrends(this.gameData, sumAmplifiedPost);
+
+        // Prepare data points for the approval trend graph
         const rivieraDataPoints = this.gameData.gameState.approvalTrends.riviera.map((value, index) => ({ x: index, y: value }));
         const presidenteDataPoints = this.gameData.gameState.approvalTrends.presidente.map((value, index) => ({ x: index, y: value }));
 
+        // Set up the canvas for drawing the approval trend graph
         const gameWidth = this.sys.game.config.width;
         const canvasWidth = 500;
-
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
+
         if (!context) {
             console.error('Failed to get canvas context');
             return;
@@ -43,11 +49,12 @@ export default class Scene3 extends Phaser.Scene {
         canvas.style.position = 'absolute';
         canvas.style.left = `${(gameWidth - canvasWidth) / 2}px`;
         canvas.style.top = '50px';
-        canvas.style.zIndex = '1'; // Lower value to ensure it is beneath Phaser elements
+        canvas.style.zIndex = '1'; // Ensure canvas is beneath Phaser elements
 
         const gameContainer = document.getElementById('game-container');
-        gameContainer.appendChild(canvas);
+        gameContainer.appendChild(canvas); // Append the canvas to the game container
 
+        // Configure the chart animation
         const totalDuration = 1000;
         const delayBetweenPoints = totalDuration / rivieraDataPoints.length;
         const previousY = (ctx) => ctx.index === 0 ? ctx.chart.scales.y.getPixelForValue(100) : ctx.chart.getDatasetMeta(ctx.datasetIndex).data[ctx.index - 1].getProps(['y'], true).y;
@@ -81,6 +88,7 @@ export default class Scene3 extends Phaser.Scene {
             }
         };
 
+        // Chart configuration for displaying the approval trends
         const config = {
             type: 'line',
             data: {
@@ -161,49 +169,66 @@ export default class Scene3 extends Phaser.Scene {
             }
         };
 
+        // Render the chart with the configuration
         new Chart(context, config);
         this.chartCanvas = canvas; // Store the reference to the canvas
+
+        // Display the sum of amplified posts
         const textStyle = { fontSize: '24px', fill: '#fff' };
         this.add.text(400, 300, `Sum of Amplified Posts: ${sumAmplifiedPost}`, textStyle).setOrigin(0.5);
 
-        let popupButton = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY + 220, 'Popup', { fontSize: '32px', fill: '#f00' })
-            .setOrigin(0.5)
-            .setInteractive();
+        // Add a button to show the popup with feedback
+        const popupButton = this.add.image(450, 500, 'popupButton'); // x and y are the coordinates where you want the button
+        popupButton.setInteractive(); // Make the button interactive
 
+        // Optional: Adjust the scale of the image if needed
+        popupButton.setScale(0.3); // Adjust the scale as needed
+
+        // Handle the pointerdown event to trigger the functionality when the button is clicked
         popupButton.on('pointerdown', () => {
             this.buttonClickSound.play();
-            this.cleanupChart();
-
+            this.cleanupChart(); // Remove the chart before proceeding
+        
             const currentDayIndex = this.gameData.gameState.currentDay - 1;
             const messages = this.gameData.gameData.days[currentDayIndex].messages;
-
+        
+            // Determine the feedback category based on the amplified impact
             let category;
-            if (sumAmplifiedPost < 5) {
-                category = "badjob";
-            } else if (sumAmplifiedPost > 0) {
+            if (sumAmplifiedPost === 0) {
                 category = "neutral";
-            } else {
+            } else if (sumAmplifiedPost > 0 && sumAmplifiedPost < 5) {
+                category = "badjob";
+            } else if (sumAmplifiedPost < 0) {
                 category = "excellent";
             }
-
+        
             const categoryMessages = messages.find(m => m.category === category).message;
             const randomMessageIndex = Math.floor(Math.random() * categoryMessages.length);
             const message = categoryMessages[randomMessageIndex].title;
-
+        
             // Transition to the PopupScene with the message
             this.scene.start('PopupScene', { message, gameData: this.gameData });
         });
+        
+        
+        popupButton.on('pointerover', () => {
+            popupButton.setTint(0x44ff44); // Change the color on hover
+        });
+        
+        popupButton.on('pointerout', () => {
+            popupButton.clearTint(); // Reset the color when not hovering
+        });
 
+        // Clean up the chart when the scene shuts down
         this.events.on('shutdown', () => {
             this.cleanupChart();
         });
     }
 
     cleanupChart() {
-        // This method removes the chart canvas when the scene shuts down
+        // Remove the chart canvas from the DOM
         if (this.chartCanvas && this.chartCanvas.parentNode) {
             this.chartCanvas.parentNode.removeChild(this.chartCanvas);
         }
     }
 }
-    

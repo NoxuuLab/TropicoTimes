@@ -1,4 +1,5 @@
 import { goToNextDay } from './gameCycle.js';
+import textStyle from '/src/styles/textStyles.js';
 
 export default class PopupScene extends Phaser.Scene {
     constructor() {
@@ -10,56 +11,67 @@ export default class PopupScene extends Phaser.Scene {
         this.gameData = data.gameData;
     }
 
-    create() {
-        const popupWidth = 800;
-        const popupHeight = 400;
-        const popupX = (this.cameras.main.width - popupWidth) / 2;
-        const popupY = (this.cameras.main.height - popupHeight) / 2;
+    preload() {
+        // Load the next day button image and button click sound
+        this.load.image('nextDayButton', 'src/assets/nextDay.png'); // Adjust the path as necessary
+        this.load.audio('buttonClickSound', 'src/assets/buttonClick.mp3'); // Load the button click sound
+    }
 
-        // Create the popup background
-        const background = this.add.rectangle(
-            popupX + popupWidth / 2,
-            popupY + popupHeight / 2,
-            popupWidth,
-            popupHeight,
-            0x000000,
-            0.8
-        ).setOrigin(0.5);
+    create() {
+        // Set the background color for the entire scene
+        this.cameras.main.setBackgroundColor('#ffffff'); // Set the background color
+
+        // Play button click sound
+        this.buttonClickSound = this.sound.add('buttonClickSound');
 
         // Create the popup text
         const messageText = this.add.text(
-            popupX + 20,
-            popupY + 50,
+            this.cameras.main.width / 2,
+            this.cameras.main.height / 2 - 50,
             this.message,
-            {
-                fontSize: '32px',
-                fill: '#fff',
-                wordWrap: { width: popupWidth - 40 },
-                fontFamily: 'Arial',
-            }
-        );
+            textStyle.messageText // Apply the messageText style
+        ).setOrigin(0.5);
 
-        // Create the "Next Day" button
-        const nextDayButton = this.add.text(
-            popupX + popupWidth / 2,
-            popupY + popupHeight - 80,
-            'Next Day',
+        // Add the signature "El Presidente's spy" under the message
+        const signatureText = this.add.text(
+            this.cameras.main.width / 2,
+            80, // Positioned slightly below the main message
+            "El Presidente’s spy has a message for you:",
             {
-                fontSize: '32px',
-                fill: '#fff',
-                backgroundColor: '#000',
-                padding: { x: 10, y: 5 },
-                border: { color: '#fff', width: 2 },
+                fontSize: '18px',
+                fill: '#333',
+                fontFamily: 'Roboto Mono',
             }
-        ).setOrigin(0.5).setInteractive();
+        ).setOrigin(0.5);
 
+        // Create the "Next Day" image button and center it on the x-axis
+        const nextDayButton = this.add.image(
+            this.cameras.main.width / 2,  // Centered on the x-axis
+            460,                          // Y position
+            'nextDayButton'
+        )
+        .setInteractive({ useHandCursor: true })
+        .setScale(0.5); // Scale the button image
+
+        // Add pointer down event to the button
         nextDayButton.on('pointerdown', () => {
+            this.buttonClickSound.play(); // Play the button click sound
+
             if (this.gameData.gameState.currentDay < this.gameData.gameState.maxDay) {
                 goToNextDay(this.gameData);
                 this.scene.start('Scene1', { gameData: this.gameData });
             } else {
-                this.scene.start('FinishScene');
+                this.scene.start('FinishScene', { gameData: this.gameData });
             }
+        });
+
+        // Optional: Add hover effects
+        nextDayButton.on('pointerover', () => {
+            nextDayButton.setTint(0x44ff44); // Lighten on hover
+        });
+
+        nextDayButton.on('pointerout', () => {
+            nextDayButton.clearTint(); // Remove hover effect
         });
     }
 }
