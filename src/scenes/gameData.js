@@ -58,27 +58,28 @@ const gameData = {
             {
               "category": "badjob",
               "message": [
-                { "title": 'you are doing it wrong' }, 
-                { "title": 'non non non' }, 
-                { "title": 'your family will be very sad' }
-              ],
+                { 
+                  "title": "Ah, splendid! You’re playing right into El Presidente's hands. Keep it up, and soon enough, your uncle will be a distant memory—if he’s lucky enough to be remembered at all." 
+                }
+              ]
             },
             {
               "category": "excellent",
               "message": [
-                {"title": "we will win wins" },
-                {"title": "best champions" },
-                {"title": "very cool" }
+                { 
+                  "title": "This... this is not good. El Presidente won’t be pleased. If you keep this up, you might actually tip the scales in that old fool Riviera’s favor. I suggest you tread carefully." 
+                }
               ]
             },
             {
-                "category": "neutral",
-                "message": [
-                  {"title": "neutral result" },
-                  {"title": "no enought" },
-                  {"title": "dont be neutral" }
-                ]
+              "category": "neutral",
+              "message": [
+                { 
+                  "title": "Hmm... neither here nor there, are we? It’s a dangerous game you’re playing—stuck in the middle, pleasing no one. I wonder how long you can keep this up before it all comes crashing down." 
+                }
+              ]
             }
+            
           ]
         },
         // DAY 2
@@ -146,26 +147,26 @@ const gameData = {
               {
                 "category": "badjob",
                 "message": [
-                  { "title": 'you are doing it wrong 2'}, 
-                  { "title": 'non non non 2' }, 
-                  { "title": 'your family will be very sad 2' }
-                ],
+                  { 
+                    "title": "Bravo! You've managed to outdo yourself in incompetence. Keep this up, and El Presidente might give you an award... for making his job easier!" 
+                  }
+                ]
               },
               {
                 "category": "excellent",
                 "message": [
-                  {"title": "we will win wins 2" },
-                  {"title": "best champions 2" },
-                  {"title": "very cool 2" }
+                  { 
+                    "title": "Oh no, not this again! If you keep this up, Riviera might actually stand a chance. El Presidente is not going to like this—maybe I should start packing my bags?" 
+                  }
                 ]
               },
               {
-                  "category": "neutral",
-                  "message": [
-                    {"title": "neutral result 2"},
-                    {"title": "no enought 2" },
-                    {"title": "dont be neutral 2" }
-                  ]
+                "category": "neutral",
+                "message": [
+                  { 
+                    "title": "Well, that was... underwhelming. Neither good nor bad, just... meh. Are you even trying? Or is this your idea of playing it safe? Spoiler: it’s not working." 
+                  }
+                ]
               }
             ]
 
@@ -227,27 +228,28 @@ const gameData = {
             {
               "category": "badjob",
               "message": [
-                { "title": 'you are doing it wrong 2'}, 
-                { "title": 'non non non 2' }, 
-                { "title": 'your family will be very sad 2' }
-              ],
+                { 
+                  "title": "Another day, another disaster! At this rate, you’ll be named Employee of the Month—for El Presidente’s campaign, of course. Keep up the bad work!" 
+                }
+              ]
             },
             {
               "category": "excellent",
               "message": [
-                {"title": "we will win wins 2" },
-                {"title": "best champions 2" },
-                {"title": "very cool 2" }
+                { 
+                  "title": "Seriously? How are you pulling this off? If Riviera wins, I’ll be out of a job... and it’ll be all your fault! Maybe I should start looking for new career options—any openings in circus clowning?" 
+                }
               ]
             },
             {
-                "category": "neutral",
-                "message": [
-                  {"title": "neutral result 2"},
-                  {"title": "no enought 2" },
-                  {"title": "dont be neutral 2" }
-                ]
+              "category": "neutral",
+              "message": [
+                { 
+                  "title": "Well, that was... spectacularly mediocre. Are you trying to bore us all to death? Even the crickets are falling asleep. Step it up, or don’t bother at all!" 
+                }
+              ]
             }
+            
           ]
 
         },
@@ -308,27 +310,28 @@ const gameData = {
             {
               "category": "badjob",
               "message": [
-                { "title": 'you are doing it wrong 4'}, 
-                { "title": 'non non non 4' }, 
-                { "title": 'your family will be very sad 4' }
-              ],
+                { 
+                  "title": "I’m beginning to think you’re on our side! Seriously, does Riviera even know what you’re up to? Because El Presidente sure appreciates your 'efforts'—keep tanking like this, and you’ll get a front-row seat to his victory parade." 
+                }
+              ]
             },
             {
               "category": "excellent",
               "message": [
-                {"title": "we will win wins 4" },
-                {"title": "best champions 4" },
-                {"title": "very cool 4" }
+                { 
+                  "title": "Okay, now this is getting out of hand! How are you doing this? Are you some kind of evil genius? I can already hear El Presidente sharpening his axe... and it’s not for woodcutting!" 
+                }
               ]
             },
             {
-                "category": "neutral",
-                "message": [
-                  {"title": "neutral result 4"},
-                  {"title": "no enought 4" },
-                  {"title": "dont be neutral 4" }
-                ]
+              "category": "neutral",
+              "message": [
+                { 
+                  "title": "Oh, playing it safe again, I see. Do you think sitting on the fence will save you? Newsflash: fences have spikes, and you’re about to get skewered. But hey, maybe that’s your plan—death by dullness!" 
+                }
+              ]
             }
+            
           ]
 
         },
@@ -389,27 +392,28 @@ const gameData = {
             {
               "category": "badjob",
               "message": [
-                { "title": 'you are doing it wrong 5'}, 
-                { "title": 'non non non 5' }, 
-                { "title": 'your family will be very sad 5' }
-              ],
+                { 
+                  "title": "I almost feel bad for you—almost. But hey, if you ever need a job, El Presidente is always looking for new comedians. With work like this, you’ll fit right in!" 
+                }
+              ]
             },
             {
               "category": "excellent",
               "message": [
-                {"title": "we will win wins 5" },
-                {"title": "best champions 5" },
-                {"title": "very cool 5" }
+                { 
+                  "title": "Well, well, look who’s suddenly the superstar! Don’t let it go to your head, though—I hear Riviera’s already planning his victory dance. It’s either that or he’s tripped over his own feet." 
+                }
               ]
             },
             {
-                "category": "neutral",
-                "message": [
-                  {"title": "neutral result 5"},
-                  {"title": "no enought 5" },
-                  {"title": "dont be neutral 5" }
-                ]
+              "category": "neutral",
+              "message": [
+                { 
+                  "title": "Ah, the art of doing just enough to stay afloat. It’s like watching a cat try to catch its own tail—entertaining, but ultimately pointless. Keep spinning!" 
+                }
+              ]
             }
+            
           ]
 
         },
@@ -470,27 +474,28 @@ const gameData = {
             {
               "category": "badjob",
               "message": [
-                { "title": 'you are doing it wrong 6'}, 
-                { "title": 'non non non 6' }, 
-                { "title": 'your family will be very sad 6' }
-              ],
+                { 
+                  "title": "Ah, another stellar performance! Really, you should be proud—if failing was an Olympic sport, you’d be taking home the gold. El Presidente is simply overjoyed by your 'help'!" 
+                }
+              ]
             },
             {
               "category": "excellent",
               "message": [
-                {"title": "we will win wins 6" },
-                {"title": "best champions 6" },
-                {"title": "very cool 6" }
+                { 
+                  "title": "Oh, fantastic! You’ve really done it now. El Presidente just loves a good challenge, especially when it comes from a know-it-all like you. Enjoy the spotlight while you can—it’s awfully hot under those lights, isn’t it?" 
+                }
               ]
             },
             {
-                "category": "neutral",
-                "message": [
-                  {"title": "neutral result 6"},
-                  {"title": "no enought 6" },
-                  {"title": "dont be neutral 6" }
-                ]
+              "category": "neutral",
+              "message": [
+                { 
+                  "title": "Wow, such a bold move—sitting right on the fence, again. You know, I’m sure your indecisiveness will be the stuff of legends... or at least a really boring bedtime story." 
+                }
+              ]
             }
+            
           ]
 
         },
@@ -551,27 +556,28 @@ const gameData = {
             {
               "category": "badjob",
               "message": [
-                { "title": 'you are doing it wrong 7'}, 
-                { "title": 'non non non 7' }, 
-                { "title": 'your family will be very sad 7' }
-              ],
+                { 
+                  "title": "Wow, just... wow. I didn’t think it was possible, but you’ve actually managed to make El Presidente’s victory a *sure thing*. You must be some kind of undercover genius... for the other team!" 
+                }
+              ]
             },
             {
               "category": "excellent",
               "message": [
-                {"title": "we will win wins 7" },
-                {"title": "best champions 7" },
-                {"title": "very cool 7" }
+                { 
+                  "title": "Well, look at you, the unstoppable force of journalism! Riviera’s probably already picking out curtains for the presidential palace. Just remember, victory parties are overrated—especially when you’re not invited." 
+                }
               ]
             },
             {
-                "category": "neutral",
-                "message": [
-                  {"title": "neutral result 7"},
-                  {"title": "no enought 7" },
-                  {"title": "dont be neutral 7" }
-                ]
+              "category": "neutral",
+              "message": [
+                { 
+                  "title": "Congratulations, you’ve mastered the fine art of doing absolutely nothing. If there’s a prize for being the world’s most indecisive person, it’s yours! Too bad no one can decide who should present it to you." 
+                }
+              ]
             }
+            
           ]
 
         },
